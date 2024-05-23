@@ -1,0 +1,16 @@
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - /data/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    network_mode: host
+    devices:
+      - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
+      - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`home-assistant`)"
+      - "traefik.http.routers.whoami.entrypoints=web"          

@@ -1,0 +1,5 @@
+ansible.codeworkspace
+ansible.code-workspace
+.secrets
+vault.enc
+vault.passwd

@@ -1,0 +1,76 @@
+- name: Mosquitto Users (plain-text) file generation
+  hosts: pi5
+  become: true
+  vars:
+    users:
+      - username: 'mosquitto'
+        password: '{{ mosquitto_mosquitto_pass }}'
+      - username: 'homeassistant'
+        password: '{{ mosquitto_homeassistant_pass }}'
+      - username: 'shelly'
+        password: '{{ mosquitto_shelly_pass }}'
+      - username: 'opendtu'
+        password: '{{ mosquitto_opendtu_pass }}'
+      - username: 'frigate'
+        password: '{{ mosquitto_frigate_pass }}'
+
+  tasks:
+    - name: Create Mosquitto directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/mosquitto
+
+    - name: Pihole Mosquitto compose file
+      ansible.builtin.copy:
+        src: mosquitto/compose.yml
+        dest: /data/mosquitto/compose.yml
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Generate the Mosquitto users file
+      delegate_to: localhost
+      ansible.builtin.template:
+        src: mosquitto/users.j2
+        dest: .secrets/mosquitto_password_file
+        mode: "0644"
+
+    - name: Install Mosquitto Password
+      ansible.builtin.copy:
+        src: .secrets/mosquitto_password_file
+        dest: /data/mosquitto/mosquitto_password_file
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: '0600'
+
+    - name: Remove local mosquitto password file
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: .secrets/mosquitto_password_file
+        state: absent
+
+    - name: Install Mosquitto configuration
+      ansible.builtin.copy:
+        src: mosquitto/mosquitto.conf
+        dest: /data/mosquitto/mosquitto.conf
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Install Mosquitto service
+      ansible.builtin.copy:
+        src: mosquitto/etc/systemd/system/mosquitto.service
+        dest: /etc/systemd/system/mosquitto.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Start service mosquitto, if not started
+      ansible.builtin.service:
+        name: mosquitto
+        state: started

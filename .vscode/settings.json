@@ -1,0 +1,6 @@
+{
+    "ansible.validation.lint.enabled": true,
+    "files.associations": {
+        "traefik.yml": "ansible"
+      }
+}

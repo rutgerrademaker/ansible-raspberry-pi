@@ -1,0 +1,34 @@
+- name: Install Traefik
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/traefik
+
+    - name: Install compose file
+      ansible.builtin.copy:
+        src: traefik/compose.yml
+        dest: /data/traefik/compose.yml
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Traefik install service
+      ansible.builtin.copy:
+        src: traefik/etc/systemd/system/traefik.service
+        dest: /etc/systemd/system/traefik.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    # - name: Start service traefik, if not started
+    #   ansible.builtin.service:
+    #     name: traefik
+    #     state: started

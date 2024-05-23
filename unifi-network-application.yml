@@ -1,0 +1,39 @@
+- name: Install Unifi Network Application
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Create Unifi Network Application directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/unifi-network-application
+        - /data/mongo-db
+
+    - name: Unifi Network Application install compose file
+      ansible.builtin.copy:
+        src: unifi-network-application/compose.yml
+        dest: /data/unifi-network-application/compose.yml
+        mode: "0600"
+
+    - name: Init Mong DB user
+      ansible.builtin.copy:
+        src: unifi-network-application/init-mongo.js
+        dest: /data/mongo-db/init-mongo.js
+        mode: "0600"
+
+    - name: Unifi Network Application install service
+      ansible.builtin.copy:
+        src: unifi-network-application/etc/systemd/system/unifi-network-application.service
+        dest: /etc/systemd/system/unifi-network-application.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Start service unifi-network-application, if not started
+      ansible.builtin.service:
+        name: unifi-network-application
+        state: started

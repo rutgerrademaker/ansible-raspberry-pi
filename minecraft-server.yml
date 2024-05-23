@@ -1,0 +1,33 @@
+- name: Install Minecraft Server
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Create Minecraft Server directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/minecraft-server
+
+    - name: Minecraft Server install compose file
+      ansible.builtin.copy:
+        src: minecraft-server/compose.yml
+        dest: /data/minecraft-server/compose.yml
+        mode: "0644"
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+
+    - name: Substitute dns 1
+      ansible.builtin.replace:
+        path: /data/minecraft-server/compose.yml
+        regexp: '___DNS_1___'
+        replace: '{{ dns_1 }}'
+
+    - name: Substitute dns 2
+      ansible.builtin.replace:
+        path: /data/minecraft-server/compose.yml
+        regexp: '___DNS_2___'
+        replace: '{{ dns_2 }}'

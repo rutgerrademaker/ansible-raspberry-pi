@@ -1,0 +1,49 @@
+- name: Install Pihole
+  hosts: pi5
+  become: true
+
+  tasks:
+    - name: Create pihole directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/pihole
+
+    - name: Pihole install compose file
+      ansible.builtin.copy:
+        src: pihole/compose.yml
+        dest: /data/pihole/compose.yml
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Substitute password
+      ansible.builtin.replace:
+        path: /data/pihole/compose.yml
+        regexp: '___WEBPASSWORD___'
+        replace: '{{ pihole_webpassword }}'
+
+    - name: Pihole install service
+      ansible.builtin.copy:
+        src: pihole/etc/systemd/system/pihole.service
+        dest: /etc/systemd/system/pihole.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Allow local usage of DNS
+      ansible.builtin.copy:
+        content: static domain_name_servers=127.0.0.1'
+        dest: dhcpcd.conf
+        mode: "0600"
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+
+    - name: Start service pihole, if not started
+      ansible.builtin.service:
+        name: pihole
+        state: started

@@ -1,0 +1,78 @@
+- name: Mosquitto
+  ansible.builtin.import_playbook: mosquitto.yml
+
+- name: Install Home Assistant
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Create Home Assistant directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/home-assistant
+        - /data/mosquitto
+
+    - name: Install Home Assistant compose file
+      ansible.builtin.copy:
+        src: home-assistant/compose.yml
+        dest: /data/home-assistant/compose.yml
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Substitute P1 usb id
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___USB_P1_ID___'
+        replace: '{{ usb_p1_id }}'
+
+    - name: Substitute Modbus usb id
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___USB_MODBUS_ID___'
+        replace: '{{ usb_modbus_id }}'
+
+    - name: Substitute Zigbee usb id
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___USB_ZIGBEE_ID___'
+        replace: '{{ usb_zigbee_id }}'
+
+    - name: Install Home Mosquitto configuration
+      ansible.builtin.copy:
+        src: home-assistant/mosquitto.conf
+        dest: /data/mosquitto/mosquitto.conf
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0600"
+
+    - name: Install Mosquitto Password
+      ansible.builtin.copy:
+        src: .secrets/mosquitto_password_file
+        dest: /data/mosquitto/mosquitto_password_file
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: '0600'
+
+    - name: Remove local mosquitto password file
+      ansible.builtin.file:
+        path: .secrets/mosquitto_password_file
+        state: absent
+      delegate_to: localhost
+
+    - name: Install Home Assistant service
+      ansible.builtin.copy:
+        src: home-assistant/etc/systemd/system/home-assistant.service
+        dest: /etc/systemd/system/home-assistant.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Start service home-assistant, if not started
+      ansible.builtin.service:
+        name: home-assistant
+        state: started

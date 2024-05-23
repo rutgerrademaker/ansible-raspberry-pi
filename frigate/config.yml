@@ -1,0 +1,19 @@
+mqtt:
+  host: 10.0.0.53
+  port: 1883
+  topic_prefix: frigate
+  client_id: frigate
+  user: "frigate"
+  password: "__frigate_mosquitto_password___"
+
+cameras:
+  FrontDoor:
+    ffmpeg:
+      inputs: 
+        - path: rtsp://192.168.1.88
+          roles:
+            - detect
+            - rtmp
+    detect:
+      width: 1280
+      height: 800

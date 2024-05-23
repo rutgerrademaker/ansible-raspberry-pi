@@ -1,0 +1,71 @@
+- name: Prepare Target system before for migration
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Confirm
+      ansible.builtin.pause:
+        prompt: "Do you really want to (re)start the migration? this will destroy data on pi5! (yes/no)"
+      register: confirm_continue
+      failed_when: not (confirm_continue.user_input | bool)
+
+    - name: Stop service home-assistant, if not stoped
+      ansible.builtin.service:
+        name: home-assistant
+        state: stopped
+
+    - name: Delete all home-assistant data
+      ansible.builtin.file:
+        state: absent
+        path: /data/home-assistant
+
+    - name: Delete all mosquitto data
+      ansible.builtin.file:
+        state: absent
+        path: /data/mosquitto
+
+    - name: Create Home Assistant directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ system_user }}"
+        group: "{{ system_group }}"
+        mode: "0755"
+      loop:
+        - /data/home-assistant
+        - /data/mosquitto
+
+- name: Migrate Home Assistant
+  hosts: pi4
+  become: true
+  tasks:
+    - name: Stop Docker Compose
+      ansible.builtin.command: docker compose down
+      changed_when: false
+
+    - name: Copy Mosquitto data to pi5
+      become: true
+      become_user: root
+      ansible.builtin.command: "rsync -azP /home/ubuntu/mosquitto/data/ rutger@10.0.0.54:/data/mosquitto/data/"
+      changed_when: false
+
+    - name: Copy Home Assistant data to pi5
+      become: true
+      become_user: root
+      ansible.builtin.command: rsync -azP ./homeassistant/ rutger@10.0.0.54:/data/home-assistant/
+      changed_when: false
+
+    # - name: While still testing, restart running system to not loose data
+    #   ansible.builtin.command: docker compose up -d
+    #   changed_when: false
+
+- name: Create new Home Assistant user for target system
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Stop service home-assistant, if not stoped
+      ansible.builtin.service:
+        name: home-assistant
+        state: stopped
+
+- name: Home Assistant
+  ansible.builtin.import_playbook: home-assistant.yml

@@ -1,0 +1,22 @@
+network:
+    ethernets:
+        eth0:
+            dhcp4: no
+            optional: true
+            addresses: [___ETH0_IP___]
+            nameservers:
+                addresses: [___DNS_1___,___DNS_2___]
+
+    version: 2
+    wifis:
+        wlan0:
+            optional: true
+            access-points:
+                ___WIFI_SSID___:
+                    password: '___WIFI_PASSWORD___'
+            addresses: [___WLAN0_IP___]
+            routes:
+                - to: default
+                  via: ___GATEWAY_IP___
+            nameservers:
+                addresses: [___DNS_1___,___DNS_2___]

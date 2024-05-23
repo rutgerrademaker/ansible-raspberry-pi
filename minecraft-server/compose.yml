@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  mc:
+    image: itzg/minecraft-bedrock-server
+    tty: true
+    stdin_open: true
+    ports:
+      - 19132:19132/udp
+    environment:
+      EULA: "TRUE"
+      MOTD: "Welcome to my world!"
+      LEVEL: "My world"
+      ALLOW_CHEATS: true
+      RCON_CMDS_STARTUP:  |-
+        gamerule doDaylightCycle false
+    dns:
+      - "{{ dns_1 }}"
+      - "{{ dns_2 }}"
+    volumes:
+      - /data/minecraft-server:/data

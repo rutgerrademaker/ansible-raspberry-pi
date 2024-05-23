@@ -1,0 +1,88 @@
+- name: Disable Systemd Resolved
+  hosts: pi5
+  become: true
+  handlers:
+    - name: Remove STUB
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        state: absent
+    - name: Restart NM
+      ansible.builtin.systemd:
+        name: NetworkManager
+        state: restarted
+
+  tasks:
+    - name: Configure static networking
+      ansible.builtin.copy:
+        src: network/etc/netplan/50-cloud-init.yaml
+        dest: /etc/netplan/50-cloud-init.yaml
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Substitute WIFI ssid
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: ___WIFI_SSID___
+        replace: '{{ network_wifi_ssid }}'
+
+    - name: Substitute WIFI password
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___WIFI_PASSWORD___'
+        replace: '{{ network_wifi_password }}'
+
+    - name: Substitute dns 1
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___DNS_1___'
+        replace: '{{ dns_1 }}'
+
+    - name: Substitute dns 2
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___DNS_2___'
+        replace: '{{ dns_2 }}'
+
+    - name: Substitute eth0 ip
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___ETH0_IP___'
+        replace: '{{ eth0_ip }}'
+
+    - name: Substitute wlan0 ip
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___WLAN0_IP___'
+        replace: '{{ wlan0_ip }}'
+
+    - name: Substitute gateway ip
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: '___GATEWAY_IP___'
+        replace: '{{ gateway_ip }}'
+
+    - name: Set default as DNS operational mode
+      community.general.ini_file:
+        path: /etc/NetworkManager/NetworkManager.conf
+        section: main
+        option: dns
+        value: default
+        no_extra_spaces: true
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - "Remove STUB"
+        - "Restart NM"
+        - netplan apply
+
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
+        masked: true
+      notify:
+        - "Remove STUB"
+        - "Restart NM"
