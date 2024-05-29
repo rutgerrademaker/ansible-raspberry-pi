@@ -4,3 +4,4 @@ ansible.code-workspace
 vault.enc
 vault.passwd
 __pycache__
+home-assistant/config

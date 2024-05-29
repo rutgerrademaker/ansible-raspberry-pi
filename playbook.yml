@@ -88,6 +88,9 @@
 - name: Network
   ansible.builtin.import_playbook: network.yml
 
+- name: Traefik
+  ansible.builtin.import_playbook: traefik.yml
+
 - name: Mosquitto
   ansible.builtin.import_playbook: mosquitto.yml
 
@@ -102,6 +105,3 @@
 
 - name: Frigate
   ansible.builtin.import_playbook: frigate.yml
-
-- name: Traefik
-  ansible.builtin.import_playbook: traefik.yml

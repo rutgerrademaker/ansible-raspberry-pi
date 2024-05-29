@@ -52,4 +52,4 @@
     - name: Start service frigate, if not started
       ansible.builtin.service:
         name: frigate
-        state: started
+        state: restarted

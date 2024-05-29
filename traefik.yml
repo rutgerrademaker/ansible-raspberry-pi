@@ -28,7 +28,7 @@
         owner: root
         group: root
 
-    # - name: Start service traefik, if not started
-    #   ansible.builtin.service:
-    #     name: traefik
-    #     state: started
+    - name: Start service traefik, if not started
+      ansible.builtin.service:
+        name: traefik
+        state: restarted

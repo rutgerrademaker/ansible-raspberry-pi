@@ -1,13 +1,11 @@
 services:
   frigate:
     container_name: frigate
-    #privileged: true # this may not be necessary for all setups
     restart: unless-stopped
     image: ghcr.io/blakeblackshear/frigate:stable
     shm_size: "64mb" # update for your cameras based on calculation above
     devices:
       - /dev/bus/usb:/dev/bus/usb
-      #- /dev/video11:/dev/video11  # For Raspberry Pi 4B
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /data/frigate/config:/config
@@ -23,3 +21,24 @@ services:
       - "8555:8555/udp" # WebRTC over udp
     environment:
       FRIGATE_RTSP_PASSWORD: "___FRIGATE_RTSP_PASSWORD___"
+    labels:
+      - "traefik.docker.network=webproxy"
+      - "traefik.enable=true"
+      - "traefik.http.routers.frigate.rule=Host(`frigate.home`)"
+      - "traefik.http.routers.frigate.entrypoints=web"
+      - "traefik.backend=frigate" 
+      - "traefik.frontend.rule=Host:frigate.home"
+      - "traefik.port=5000"
+      - "traefik.default.protocol=http"
+      - "traefik.http.services.frigate.loadbalancer.server.port=5000"
+    networks:
+      - local
+      - public
+
+networks:
+  local:
+     name: frigate
+
+  public:
+    external: true
+    name: "webproxy"

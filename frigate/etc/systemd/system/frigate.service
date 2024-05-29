@@ -1,6 +1,6 @@
 [Unit]
 Description=Frigate (docker compose)
-Requires=docker.service
+Requires=mosquitto.service
 After=docker.service
 
 [Service]
@@ -9,7 +9,7 @@ RemainAfterExit=yes
 WorkingDirectory=/data/frigate
 ExecStart=/usr/bin/docker compose -f /data/frigate/compose.yml up -d
 ExecStop=/usr/bin/docker compose -f /data/frigate/compose.yml down
-TimeoutStartSec=0
+TimeoutStartSec=45
 
 [Install]
 WantedBy=multi-user.target

@@ -9,7 +9,7 @@ RemainAfterExit=yes
 WorkingDirectory=/data/traefik
 ExecStart=/usr/bin/docker compose -f /data/traefik/compose.yml up -d
 ExecStop=/usr/bin/docker compose -f /data/traefik/compose.yml down
-TimeoutStartSec=0
+TimeoutStartSec=5
 
 [Install]
 WantedBy=multi-user.target
