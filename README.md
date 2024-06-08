@@ -11,7 +11,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Pi Hole](#pi-hole)
     - [Home Assistant](#home-assistant)
     - [Mosquitto](#mosquitto)
-    - [Unify Network Application](#unify-network-application)
+    - [Unifi Network Application](#unifi-network-application)
     - [Minecraft server](#minecraft-server)
     - [Frigate NVR](#frigate-nvr)
     - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
@@ -47,7 +47,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
-### Unify Network Application
+### Unifi Network Application
 
 - Web interface: https://10.0.0.53:8443
 - See https://github.com/linuxserver/docker-unifi-network-application
@@ -88,7 +88,7 @@ Just playing around with Traefik here, the following services are now accesible 
 | Home assistant            | http://home-assistant.home/ |
 | Pi hole                   | http://pihole.home/         |
 | Frigate AVR               | http://frigate.home/        |
-| Unify Network Application | http://pihole.home/         |
+| Unifi Network Application | http://unifi.home/          |
 | Traefik                   | http://traefik.home/        |
 
 ## Miscelaneaus
@@ -178,7 +178,7 @@ If you trust yourself saving these in plain text on your local machine you can a
 ## Known issues
 
 - Different services should probably use different users and networks.
-- MongoDB for Unify should have secret password.
+- MongoDB for Unifi should have secret password.
 - I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
 - When a compose file is updated services should be manually restarted.
 - Have not tested the full playbook "from scratch".
@@ -187,8 +187,9 @@ If you trust yourself saving these in plain text on your local machine you can a
 ## Wishlist / TODO
 
 - Install my custom PiHole blocklist (or latest backup).
-- Install my custom Unify configuration (or latest backup).
+- Install my custom Unifi configuration (or latest backup).
 - Install letsencrypt SSL certificate(s).
 - Scheduled backup for data directory to other server.
 - Enable / configure firewall.
 - Automate creating DNS records in OpenWRT.
+- Provison Home Assistant configuration files for solar / mqtt / modbus etc.
