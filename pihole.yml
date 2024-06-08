@@ -44,7 +44,12 @@
         mode: "0644"
         owner: root
 
-    - name: Start service pihole, if not started
+    - name: Enable service pihole
+      ansible.builtin.service:
+        name: frigate
+        enabled: true
+
+    - name: Start service pihole
       ansible.builtin.service:
         name: pihole
         state: restarted

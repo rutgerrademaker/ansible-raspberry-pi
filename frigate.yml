@@ -49,12 +49,12 @@
         owner: root
         group: root
 
-    - name: Enable traefik service
+    - name: Enable service frigate
       ansible.builtin.service:
         name: frigate
         enabled: true
 
-    - name: Start service frigate, if not started
+    - name: Start service frigate
       ansible.builtin.service:
         name: frigate
         state: restarted

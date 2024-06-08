@@ -46,7 +46,12 @@
         owner: root
         group: root
 
-    - name: Start service home-assistant, if not started
+    - name: Enable service home-assistant
+      ansible.builtin.service:
+        name: home-assistant
+        enabled: true
+
+    - name: Start service home-assistant
       ansible.builtin.service:
         name: home-assistant
         state: restarted
