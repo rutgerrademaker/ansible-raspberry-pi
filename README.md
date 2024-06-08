@@ -135,7 +135,7 @@ pi5:
 
 ### Secrets
 
-Create an ansible secrets file containing the following entries:
+Create an ansible vault file containing the following entries:
 
 ```yaml
 network_wifi_ssid: "your_wifi_ssid"
@@ -152,7 +152,15 @@ frigate_rtsp_password: "YourSecretFrigateRtspPassword"
 pihole_webpassword: "YourSecretPiHolePassword"
 ```
 
-e.g: ./secrets/vault.yml
+```shell
+# To create a vault
+ansible-vault create ./.secrets/vault.yml 
+
+# To add/edit secrets
+ansible-vault edit ./.secrets/vault.yml
+```
+
+More info: https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html
 
 ## Usage
 
