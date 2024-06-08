@@ -6,13 +6,25 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ## Features
 
-- [Pi Hole](#pi-hole)
-- [Home Assistant](#home-assistant)
-- [Mosquitto](#mosquitto)
-- [Unify Network Application](#unify-network-application)
-- [Minecraft Server](#minecraft-server)
-- [Frigate NVR](#frigate-nvr)
-- [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
+- [Ansible script to provision a raspberry Pi](#ansible-script-to-provision-a-raspberry-pi)
+  - [Features](#features)
+    - [Pi Hole](#pi-hole)
+    - [Home Assistant](#home-assistant)
+    - [Mosquitto](#mosquitto)
+    - [Unify Network Application](#unify-network-application)
+    - [Minecraft server](#minecraft-server)
+    - [Frigate NVR](#frigate-nvr)
+    - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
+    - [Traefik](#traefik)
+  - [Miscelaneaus](#miscelaneaus)
+    - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
+  - [Prerequisites](#prerequisites)
+    - [Install Ubuntu Server on the Pi](#install-ubuntu-server-on-the-pi)
+    - [Inventory](#inventory)
+    - [Secrets](#secrets)
+  - [Usage](#usage)
+  - [Known issues](#known-issues)
+  - [Wishlist / TODO](#wishlist--todo)
 
 ### Pi Hole
 
@@ -54,7 +66,7 @@ cd /data/minecraft server && docker compose up -d
 cd /data/minecraft server && docker compose down
 ```
 
-### Frigate (NVR)
+### Frigate NVR
 
 - http://10.0.0.53:5000/
 - https://docs.frigate.video/
@@ -65,11 +77,26 @@ The `migrate.yml` playbook will copy all data from an old pi (p4) to a new pi (p
 It has to run as `root`, as some files (like HA's auth file) are owner by root on the source system.
 As it was created after the whole playbook, I did not add this step to  playbook.yml.
 
-### Traefik (WIP)
+### Traefik
 
 - See https://traefik.io/
 
-End goal here is to use domains instead of ip addresses and portnumbers, one day.
+Just playing around with Traefik here, the following services are now accesible via Traefik
+
+| Application               | URL                         |
+| --------------------------|-----------------------------|
+| Home assistant            | http://home-assistant.home/ |
+| Pi hole                   | http://pihole.home/         |
+| Frigate AVR               | http://frigate.home/        |
+| Unify Network Application | http://pihole.home/         |
+
+## Miscelaneaus
+
+### Coral TPU packages & drivers
+
+Used for object detection in Frigate
+
+- https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
 
 ## Prerequisites
 
@@ -128,24 +155,26 @@ e.g: ./secrets/vault.yml
 ## Usage
 
 ```shell
- ansible-playbook playbook.yml \
-    -e @.secrets/vault.yml
+ ansible-playbook \
+     --ask-become-pass \
+     --ask-vault-pass \
+     -e @.secrets/vault.yml \
+    playbook.yml
 ```
 
 This will then ask for the sudo password of the user and the password for your vault file.
 If you trust yourself saving these in plain text on your local machine you can also execute the playbooks like this:
 
 ```shell
- ansible-playbook playbook.yml \
+ ansible-playbook \
+    --become-password-file .secrets/sudo.pass \
+    --vault-password-file .secrets/vault.pass \
     -e @.secrets/vault.yml \
-    --become-password-file ~/.secrets/sudo.pass \
-    --vault-password-file ~/.secrets/vault.pass
+    playbook.yml
 ```
 
 ## Known issues
 
-- Default network now uses WIFI as I don't have a network cable to where my PI is located (yet).
-- Traefik is WIP.
 - Different services should probably use different users and networks.
 - MongoDB for Unify should have secret password.
 - I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
@@ -158,7 +187,5 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Install my custom PiHole blocklist (or latest backup).
 - Install my custom Unify configuration (or latest backup).
 - Install letsencrypt SSL certificate(s).
-- Finish Traefik.
 - Scheduled backup for data directory to other server.
 - Enable / configure firewall.
-- Install some camera's for Frigate

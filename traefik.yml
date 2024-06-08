@@ -28,6 +28,11 @@
         owner: root
         group: root
 
+    - name: Enable traefik service
+      ansible.builtin.service:
+        name: traefik
+        enabled: true
+
     - name: Start service traefik, if not started
       ansible.builtin.service:
         name: traefik

@@ -4,7 +4,7 @@ network:
 
     ethernets:
         eth0:
-            optional: true
+            optional: false
             addresses: [___ETH0_IP___]
             nameservers:
                 addresses: [___DNS_1___,___DNS_2___]

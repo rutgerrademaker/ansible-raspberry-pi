@@ -25,6 +25,10 @@ services:
        - local
     ports:
       - "8123:8123"
+    dns:
+      - 10.0.0.52
+      - 10.0.0.50
+      - 10.0.0.54
 
 networks:
   local:

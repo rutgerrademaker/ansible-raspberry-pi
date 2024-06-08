@@ -37,7 +37,7 @@
 
     - name: Allow local usage of DNS
       ansible.builtin.lineinfile:
-        line: static domain_name_servers=127.0.0.1
+        line: static domain_name_servers=10.0.0.54
         state: present
         create: true
         path: /etc/dhcpcd.conf

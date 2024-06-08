@@ -85,6 +85,9 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
+- name: Coral
+  ansible.builtin.import_playbook: coral.yml
+
 - name: Network
   ansible.builtin.import_playbook: network.yml
 

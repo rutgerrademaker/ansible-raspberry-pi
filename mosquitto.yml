@@ -70,7 +70,12 @@
         owner: root
         group: root
 
+    - name: Enable mosquitto service
+      ansible.builtin.service:
+        name: traefik
+        enabled: true
+
     - name: Start service mosquitto, if not started
       ansible.builtin.service:
         name: mosquitto
-        state: started
+        state: restarted
