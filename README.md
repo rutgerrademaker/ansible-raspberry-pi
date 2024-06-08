@@ -89,6 +89,7 @@ Just playing around with Traefik here, the following services are now accesible 
 | Pi hole                   | http://pihole.home/         |
 | Frigate AVR               | http://frigate.home/        |
 | Unify Network Application | http://pihole.home/         |
+| Traefik                   | http://traefik.home/        |
 
 ## Miscelaneaus
 
@@ -108,6 +109,7 @@ This script assumes:
 - Next to root, you have an addtional user/group (and password) we can configure a `system_user` and `system_group` 
 which can become `root`.
 - You have SSH access to your Pi
+- (local) DNS entries are created for the traefik domains
 
 I used [Raspbery PI imager](https://ubuntu.com/download/raspberry-pi) but other methods should also work.
 
@@ -189,3 +191,4 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Install letsencrypt SSL certificate(s).
 - Scheduled backup for data directory to other server.
 - Enable / configure firewall.
+- Automate creating DNS records in OpenWRT.
