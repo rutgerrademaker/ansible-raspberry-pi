@@ -6,7 +6,7 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "1080:80/tcp"
+      #- "1080:80/tcp"
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD: '___WEBPASSWORD___'
@@ -17,11 +17,11 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole.home`)"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.local`)"
       - "traefik.http.routers.pihole.entrypoints=web"
       - "traefik.backend=pihole" 
-      - "traefik.frontend.rule=Host:pihole.home"
-      - "traefik.port=1080"
+      - "traefik.frontend.rule=Host:pihole.local"
+      - "traefik.port=80"
       - "traefik.default.protocol=http"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
     networks:

@@ -33,7 +33,12 @@
         owner: root
         group: root
 
-    - name: Start service unifi-network-application, if not started
+    - name: Enable service unifi-network-application
       ansible.builtin.service:
         name: unifi-network-application
         state: started
+
+    - name: Start service unifi-network-application
+      ansible.builtin.service:
+        name: unifi-network-application
+        state: restarted

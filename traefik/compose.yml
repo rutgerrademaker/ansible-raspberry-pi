@@ -15,7 +15,7 @@ services:
       - "80:80"
       - "443:443"
       # Port 8080 must be allocated to the unfi-network-application in order to migrate/adopt devices
-      - "8081:8080"
+      #- "8081:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
@@ -24,10 +24,10 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.home`)"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.local`)"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.backend=traefik" 
-      - "traefik.frontend.rule=Host:traefik.home"
+      - "traefik.frontend.rule=Host:traefik.local"
       - "traefik.port=8080"
       - "traefik.default.protocol=http"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"

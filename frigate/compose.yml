@@ -15,7 +15,6 @@ services:
         tmpfs:
           size: 1000000000
     ports:
-      - "5000:5000"
       - "8554:8554" # RTSP feeds
       - "8555:8555/tcp" # WebRTC over tcp
       - "8555:8555/udp" # WebRTC over udp
@@ -24,10 +23,10 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.frigate.rule=Host(`frigate.home`)"
+      - "traefik.http.routers.frigate.rule=Host(`frigate.local`)"
       - "traefik.http.routers.frigate.entrypoints=web"
       - "traefik.backend=frigate" 
-      - "traefik.frontend.rule=Host:frigate.home"
+      - "traefik.frontend.rule=Host:frigate.local"
       - "traefik.port=5000"
       - "traefik.default.protocol=http"
       - "traefik.http.services.frigate.loadbalancer.server.port=5000"
@@ -41,4 +40,4 @@ networks:
 
   public:
     external: true
-    name: "webproxy"
+    name: webproxy

@@ -6,15 +6,14 @@ services:
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    #network_mode: host
     devices:
       - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
       - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
     labels:
       - "traefik.backend=home-assistant"
       - "traefik.docker.network=webproxy"
-      - "traefik.http.routers.home-assistant.rule=Host(`home-assistant.home`)"
-      - "traefik.frontend.rule=Host:home-assistant.home"
+      - "traefik.http.routers.home-assistant.rule=Host(`hass.local`)"
+      - "traefik.frontend.rule=Host:hass.local"
       - "traefik.http.routers.home-assistant.entrypoints=web"
       - "traefik.enable=true"
       - "traefik.port=8123"
@@ -26,9 +25,8 @@ services:
     ports:
       - "8123:8123"
     dns:
-      - 10.0.0.52
-      - 10.0.0.50
-      - 10.0.0.54
+      - '___DNS_1___'
+      - '___DNS_2___'
 
 networks:
   local:

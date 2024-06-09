@@ -38,6 +38,18 @@
         regexp: '___USB_ZIGBEE_ID___'
         replace: '{{ usb_zigbee_id }}'
 
+    - name: Substitute DNS 1
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___DNS_1___'
+        replace: '{{ dns_1 }}'
+
+    - name: Substitute DNS 2
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___DNS_2___'
+        replace: '{{ dns_2 }}'
+
     - name: Install Home Assistant service
       ansible.builtin.copy:
         src: home-assistant/etc/systemd/system/home-assistant.service

@@ -35,7 +35,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Home Assistant
 
-- Web interface: http://10.0.0.53:8123
+- Web interface: http:/hass.local
 - See https://www.home-assistant.io/
 - See https://www.home-assistant.io/installation/raspberrypi/#docker-compose
 - Starts on (re)boot
@@ -49,7 +49,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Unifi Network Application
 
-- Web interface: https://10.0.0.53:8443
+- Web interface: https://unifi.local:8443
 - See https://github.com/linuxserver/docker-unifi-network-application
 - Starts on (re)boot
 
@@ -79,17 +79,17 @@ As it was created after the whole playbook, I did not add this step to  playbook
 
 ### Traefik
 
+- http://traefik.local/
 - See https://traefik.io/
 
 Just playing around with Traefik here, the following services are now accesible via Traefik
 
-| Application               | URL                         |
-| --------------------------|-----------------------------|
-| Home assistant            | http://home-assistant.home/ |
-| Pi hole                   | http://pihole.home/         |
-| Frigate AVR               | http://frigate.home/        |
-| Unifi Network Application | http://unifi.home/          |
-| Traefik                   | http://traefik.home/        |
+| Application               | URL                          |
+| --------------------------|------------------------------|
+| Home assistant            | http://home-assistant.local/ |
+| Pi hole                   | http://pihole.local/admin/   |
+| Frigate AVR               | http://frigate.local/        |
+| Traefik                   | http://traefik.local/        |
 
 ## Miscelaneaus
 
@@ -191,13 +191,16 @@ If you trust yourself saving these in plain text on your local machine you can a
 - When a compose file is updated services should be manually restarted.
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
+- Unifi does not yet work via Traefik.
+- Quotes are not (yet) used consistent.
 
 ## Wishlist / TODO
 
-- Install my custom PiHole blocklist (or latest backup).
+- Install my custom Pi Hole blocklist (or latest backup).
 - Install my custom Unifi configuration (or latest backup).
 - Install letsencrypt SSL certificate(s).
 - Scheduled backup for data directory to other server.
 - Enable / configure firewall.
 - Automate creating DNS records in OpenWRT.
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
+- Generalize DNS configuration (maybe local and/or public?).
