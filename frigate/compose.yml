@@ -14,10 +14,10 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
-    ports:
-      - "8554:8554" # RTSP feeds
-      - "8555:8555/tcp" # WebRTC over tcp
-      - "8555:8555/udp" # WebRTC over udp
+    #ports:
+      #- "8554:8554" # RTSP feeds
+      #- "8555:8555/tcp" # WebRTC over tcp
+      #- "8555:8555/udp" # WebRTC over udp
     environment:
       FRIGATE_RTSP_PASSWORD: "___FRIGATE_RTSP_PASSWORD___"
     labels:

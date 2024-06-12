@@ -193,3 +193,4 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Automate creating DNS records in OpenWRT.
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
+- Allow unifi to adopt devices via traefik on http://unifi.local:8808 instead of IP address.
