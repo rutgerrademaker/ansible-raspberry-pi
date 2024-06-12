@@ -29,19 +29,23 @@ services:
       #- 5514:5514/udp #optional
     restart: unless-stopped
     labels:
-      - "traefik.docker.network=webproxy"
-      - "traefik.enable=true"
-      - "traefik.http.routers.unifi.rule=Host(`unifi.local`)"
-      - "traefik.http.routers.unifi.entrypoints=web,websecure"
-      - "traefik.backend=unifi"
-      - "traefik.frontend.rule=Host:unifi.local"
-      - "traefik.port=8443"
-      - "traefik.default.protocol=https"
-      - "traefik.http.services.unifi.loadbalancer.server.port=8443"
-      - "traefik.http.services.unifi.loadbalancer.server.scheme=https"
+      - traefik.docker.network=webproxy
+      - traefik.enable=true
+      - traefik.http.routers.unifi.rule=Host(`unifi.local`)
+      - traefik.http.routers.unifi.entrypoints=web
+      - traefik.backend=unifi
+      - traefik.frontend.rule=Host:unifi.local
+      - traefik.port=8443
+      - traefik.default.protocol=http
+      - traefik.http.services.unifi.loadbalancer.server.port=8443
+      - traefik.http.services.unifi.loadbalancer.server.scheme=https
+      #- traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
     networks:
       - local
       - public
+
+
+
 
   mongo-db:
     image: docker.io/mongo:latest

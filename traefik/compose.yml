@@ -4,18 +4,17 @@ services:
     image: "traefik:v3.0"
     container_name: "traefik"
     command:
-      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--providers.file.watch=true"
+      # This is needed for Unifi Network Application
+      - "--serversTransport.insecureSkipVerify=true"
     ports:
       - "80:80"
       - "443:443"
-      # Port 8080 must be allocated to the unfi-network-application in order to migrate/adopt devices
-      #- "8081:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
@@ -25,9 +24,9 @@ services:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.local`)"
+      - "traefik.frontend.rule=Host:traefik.local"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.backend=traefik" 
-      - "traefik.frontend.rule=Host:traefik.local"
       - "traefik.port=8080"
       - "traefik.default.protocol=http"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"

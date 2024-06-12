@@ -28,16 +28,16 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Pi Hole
 
-- Web interface: http://10.0.0.53:1080/admin
-- See https://pi-hole.net/
-- See https://github.com/pi-hole/docker-pi-hole
+- Web interface: http://pihole.local/
+- Docs: https://pi-hole.net/
+- Docs: https://github.com/pi-hole/docker-pi-hole
 - Starts on (re)boot
 
 ### Home Assistant
 
-- Web interface: http:/hass.local
-- See https://www.home-assistant.io/
-- See https://www.home-assistant.io/installation/raspberrypi/#docker-compose
+- Web interface: http://hass.local/
+- Docs: https://www.home-assistant.io/
+- Docs: https://www.home-assistant.io/installation/raspberrypi/#docker-compose
 - Starts on (re)boot
 
 ### Mosquitto
@@ -49,8 +49,8 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Unifi Network Application
 
-- Web interface: https://unifi.local:8443
-- See https://github.com/linuxserver/docker-unifi-network-application
+- Web interface: http://unifi.local/
+- Docs https://github.com/linuxserver/docker-unifi-network-application
 - Starts on (re)boot
 
 ### Minecraft server
@@ -68,8 +68,8 @@ cd /data/minecraft server && docker compose down
 
 ### Frigate NVR
 
-- http://10.0.0.53:5000/
-- https://docs.frigate.video/
+- Web interface: http://frigate.local/
+- Docs: https://docs.frigate.video/
 
 ### Home Assistant + Mosquitto migration script
 
@@ -79,17 +79,8 @@ As it was created after the whole playbook, I did not add this step to  playbook
 
 ### Traefik
 
-- http://traefik.local/
-- See https://traefik.io/
-
-Just playing around with Traefik here, the following services are now accesible via Traefik
-
-| Application               | URL                          |
-| --------------------------|------------------------------|
-| Home assistant            | http://home-assistant.local/ |
-| Pi hole                   | http://pihole.local/admin/   |
-| Frigate AVR               | http://frigate.local/        |
-| Traefik                   | http://traefik.local/        |
+- Web interface: http://traefik.local/
+- Docs: https://traefik.io/
 
 ## Miscelaneaus
 
@@ -185,13 +176,11 @@ If you trust yourself saving these in plain text on your local machine you can a
 
 ## Known issues
 
-- Different services should probably use different users and networks.
+- Different services should probably use different users.
 - MongoDB for Unifi should have secret password.
 - I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
-- When a compose file is updated services should be manually restarted.
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
-- Unifi does not yet work via Traefik.
 - Quotes are not (yet) used consistent.
 
 ## Wishlist / TODO
