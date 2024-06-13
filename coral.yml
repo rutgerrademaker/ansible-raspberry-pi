@@ -1,0 +1,26 @@
+---
+# https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
+- name: Install Coral packages
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Add Coral GPG apt Key
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add google cloud apt repository
+      ansible.builtin.apt_repository:
+        repo: deb https://packages.cloud.google.com/apt coral-edgetpu-stable main
+        state: present
+
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        upgrade: "yes"
+        update_cache: true
+        cache_valid_time: 86400 # One day
+
+    - name: Install the Edge TPU runtime and PyCoral library
+      ansible.builtin.apt:
+        pkg:
+          - libedgetpu1-std

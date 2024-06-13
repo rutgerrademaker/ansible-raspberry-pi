@@ -1,13 +1,16 @@
 network:
+    version: 2
+    renderer: networkd
+
     ethernets:
         eth0:
-            dhcp4: no
-            optional: true
+            optional: false
             addresses: [___ETH0_IP___]
             nameservers:
                 addresses: [___DNS_1___,___DNS_2___]
-
-    version: 2
+            routes:
+                - to: default
+                  via: ___GATEWAY_IP___
     wifis:
         wlan0:
             optional: true
@@ -15,8 +18,5 @@ network:
                 ___WIFI_SSID___:
                     password: '___WIFI_PASSWORD___'
             addresses: [___WLAN0_IP___]
-            routes:
-                - to: default
-                  via: ___GATEWAY_IP___
             nameservers:
                 addresses: [___DNS_1___,___DNS_2___]

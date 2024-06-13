@@ -18,16 +18,31 @@ services:
     volumes:
       - /data/unifi-network-application:/config
     ports:
-      - 8443:8443
+      #- 8443:8443
       - 3478:3478/udp
       - 10001:10001/udp
-      #- 8080:8080
+      # Port 8080 is used for adopting, for now this does not yet work via Traefik
+      - 8080:8080
       #- 1900:1900/udp #optional
       #- 8843:8843 #optional
       #- 8880:8880 #optional
       #- 6789:6789 #optional
       #- 5514:5514/udp #optional
     restart: unless-stopped
+    labels:
+      - traefik.docker.network=webproxy
+      - traefik.enable=true
+      - traefik.http.routers.unifi.rule=Host(`unifi.local`)
+      - traefik.http.routers.unifi.entrypoints=web
+      - traefik.backend=unifi
+      - traefik.frontend.rule=Host:unifi.local
+      - traefik.port=8443
+      - traefik.default.protocol=http
+      - traefik.http.services.unifi.loadbalancer.server.port=8443
+      - traefik.http.services.unifi.loadbalancer.server.scheme=https
+    networks:
+      - local
+      - public
 
   mongo-db:
     image: docker.io/mongo:latest
@@ -36,9 +51,13 @@ services:
       - /data/mongo-db:/data/db
       - /data/mongo-db/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     restart: unless-stopped
-    ports:
-      - 27017:27017
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`unifi`)"
-      - "traefik.http.routers.whoami.entrypoints=web"          
+    networks:
+      - local
+
+networks:
+  local:
+     name: unifi
+
+  public:
+    external: true
+    name: "webproxy"

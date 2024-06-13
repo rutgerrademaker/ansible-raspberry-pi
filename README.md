@@ -6,26 +6,38 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ## Features
 
-- [Pi Hole](#pi-hole)
-- [Home Assistant](#home-assistant)
-- [Mosquitto](#mosquitto)
-- [Unify Network Application](#unify-network-application)
-- [Minecraft Server](#minecraft-server)
-- [Frigate NVR](#frigate-nvr)
-- [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
+- [Ansible script to provision a raspberry Pi](#ansible-script-to-provision-a-raspberry-pi)
+  - [Features](#features)
+    - [Pi Hole](#pi-hole)
+    - [Home Assistant](#home-assistant)
+    - [Mosquitto](#mosquitto)
+    - [Unifi Network Application](#unifi-network-application)
+    - [Minecraft server](#minecraft-server)
+    - [Frigate NVR](#frigate-nvr)
+    - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
+    - [Traefik](#traefik)
+  - [Miscelaneaus](#miscelaneaus)
+    - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
+  - [Prerequisites](#prerequisites)
+    - [Install Ubuntu Server on the Pi](#install-ubuntu-server-on-the-pi)
+    - [Inventory](#inventory)
+    - [Secrets](#secrets)
+  - [Usage](#usage)
+  - [Known issues](#known-issues)
+  - [Wishlist / TODO](#wishlist--todo)
 
 ### Pi Hole
 
-- Web interface: http://10.0.0.53:1080/admin
-- See https://pi-hole.net/
-- See https://github.com/pi-hole/docker-pi-hole
+- Web interface: http://pihole.local/
+- Docs: https://pi-hole.net/
+- Docs: https://github.com/pi-hole/docker-pi-hole
 - Starts on (re)boot
 
 ### Home Assistant
 
-- Web interface: http://10.0.0.53:8123
-- See https://www.home-assistant.io/
-- See https://www.home-assistant.io/installation/raspberrypi/#docker-compose
+- Web interface: http://hass.local/
+- Docs: https://www.home-assistant.io/
+- Docs: https://www.home-assistant.io/installation/raspberrypi/#docker-compose
 - Starts on (re)boot
 
 ### Mosquitto
@@ -35,10 +47,10 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
-### Unify Network Application
+### Unifi Network Application
 
-- Web interface: https://10.0.0.53:8443
-- See https://github.com/linuxserver/docker-unifi-network-application
+- Web interface: http://unifi.local/
+- Docs https://github.com/linuxserver/docker-unifi-network-application
 - Starts on (re)boot
 
 ### Minecraft server
@@ -54,10 +66,10 @@ cd /data/minecraft server && docker compose up -d
 cd /data/minecraft server && docker compose down
 ```
 
-### Frigate (NVR)
+### Frigate NVR
 
-- http://10.0.0.53:5000/
-- https://docs.frigate.video/
+- Web interface: http://frigate.local/
+- Docs: https://docs.frigate.video/
 
 ### Home Assistant + Mosquitto migration script
 
@@ -65,11 +77,18 @@ The `migrate.yml` playbook will copy all data from an old pi (p4) to a new pi (p
 It has to run as `root`, as some files (like HA's auth file) are owner by root on the source system.
 As it was created after the whole playbook, I did not add this step to  playbook.yml.
 
-### Traefik (WIP)
+### Traefik
 
-- See https://traefik.io/
+- Web interface: http://traefik.local/
+- Docs: https://traefik.io/
 
-End goal here is to use domains instead of ip addresses and portnumbers, one day.
+## Miscelaneaus
+
+### Coral TPU packages & drivers
+
+Used for object detection in Frigate
+
+- https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
 
 ## Prerequisites
 
@@ -81,6 +100,7 @@ This script assumes:
 - Next to root, you have an addtional user/group (and password) we can configure a `system_user` and `system_group` 
 which can become `root`.
 - You have SSH access to your Pi
+- (local) DNS entries are created for the traefik domains
 
 I used [Raspbery PI imager](https://ubuntu.com/download/raspberry-pi) but other methods should also work.
 
@@ -106,7 +126,7 @@ pi5:
 
 ### Secrets
 
-Create an ansible secrets file containing the following entries:
+Create an ansible vault file containing the following entries:
 
 ```yaml
 network_wifi_ssid: "your_wifi_ssid"
@@ -123,42 +143,54 @@ frigate_rtsp_password: "YourSecretFrigateRtspPassword"
 pihole_webpassword: "YourSecretPiHolePassword"
 ```
 
-e.g: ./secrets/vault.yml
+```shell
+# To create a vault
+ansible-vault create ./.secrets/vault.yml 
+
+# To add/edit secrets
+ansible-vault edit ./.secrets/vault.yml
+```
+
+More info: https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html
 
 ## Usage
 
 ```shell
- ansible-playbook playbook.yml \
-    -e @.secrets/vault.yml
+ ansible-playbook \
+     --ask-become-pass \
+     --ask-vault-pass \
+     -e @.secrets/vault.yml \
+    playbook.yml
 ```
 
 This will then ask for the sudo password of the user and the password for your vault file.
 If you trust yourself saving these in plain text on your local machine you can also execute the playbooks like this:
 
 ```shell
- ansible-playbook playbook.yml \
+ ansible-playbook \
+    --become-password-file .secrets/sudo.pass \
+    --vault-password-file .secrets/vault.pass \
     -e @.secrets/vault.yml \
-    --become-password-file ~/.secrets/sudo.pass \
-    --vault-password-file ~/.secrets/vault.pass
+    playbook.yml
 ```
 
 ## Known issues
 
-- Default network now uses WIFI as I don't have a network cable to where my PI is located (yet).
-- Traefik is WIP.
-- Different services should probably use different users and networks.
-- MongoDB for Unify should have secret password.
+- Different services should probably use different users.
+- MongoDB for Unifi should have secret password.
 - I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
-- When a compose file is updated services should be manually restarted.
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
+- Quotes are not (yet) used consistent.
 
 ## Wishlist / TODO
 
-- Install my custom PiHole blocklist (or latest backup).
-- Install my custom Unify configuration (or latest backup).
+- Install my custom Pi Hole blocklist (or latest backup).
+- Install my custom Unifi configuration (or latest backup).
 - Install letsencrypt SSL certificate(s).
-- Finish Traefik.
 - Scheduled backup for data directory to other server.
 - Enable / configure firewall.
-- Install some camera's for Frigate
+- Automate creating DNS records in OpenWRT.
+- Provison Home Assistant configuration files for solar / mqtt / modbus etc.
+- Generalize DNS configuration (maybe local and/or public?).
+- Allow unifi to adopt devices via traefik on http://unifi.local:8808 instead of IP address.

@@ -1,6 +1,3 @@
-- name: Mosquitto
-  ansible.builtin.import_playbook: mosquitto.yml
-
 - name: Install Home Assistant
   hosts: pi5
   become: true
@@ -14,7 +11,6 @@
         mode: "0755"
       loop:
         - /data/home-assistant
-        - /data/mosquitto
 
     - name: Install Home Assistant compose file
       ansible.builtin.copy:
@@ -42,27 +38,17 @@
         regexp: '___USB_ZIGBEE_ID___'
         replace: '{{ usb_zigbee_id }}'
 
-    - name: Install Home Mosquitto configuration
-      ansible.builtin.copy:
-        src: home-assistant/mosquitto.conf
-        dest: /data/mosquitto/mosquitto.conf
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
-        mode: "0600"
+    - name: Substitute DNS 1
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___DNS_1___'
+        replace: '{{ dns_1 }}'
 
-    - name: Install Mosquitto Password
-      ansible.builtin.copy:
-        src: .secrets/mosquitto_password_file
-        dest: /data/mosquitto/mosquitto_password_file
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
-        mode: '0600'
-
-    - name: Remove local mosquitto password file
-      ansible.builtin.file:
-        path: .secrets/mosquitto_password_file
-        state: absent
-      delegate_to: localhost
+    - name: Substitute DNS 2
+      ansible.builtin.replace:
+        path: /data/home-assistant/compose.yml
+        regexp: '___DNS_2___'
+        replace: '{{ dns_2 }}'
 
     - name: Install Home Assistant service
       ansible.builtin.copy:
@@ -72,7 +58,12 @@
         owner: root
         group: root
 
-    - name: Start service home-assistant, if not started
+    - name: Enable service home-assistant
       ansible.builtin.service:
         name: home-assistant
-        state: started
+        enabled: true
+
+    - name: Start service home-assistant
+      ansible.builtin.service:
+        name: home-assistant
+        state: restarted

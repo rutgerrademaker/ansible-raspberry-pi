@@ -85,8 +85,14 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
+- name: Coral 
+  ansible.builtin.import_playbook: coral.yml
+
 - name: Network
   ansible.builtin.import_playbook: network.yml
+
+- name: Traefik
+  ansible.builtin.import_playbook: traefik.yml
 
 - name: Mosquitto
   ansible.builtin.import_playbook: mosquitto.yml
@@ -100,8 +106,5 @@
 - name: Pi Hole
   ansible.builtin.import_playbook: pihole.yml
 
-- name: Frigate
+- name: Frigate NVR
   ansible.builtin.import_playbook: frigate.yml
-
-- name: Traefik
-  ansible.builtin.import_playbook: traefik.yml

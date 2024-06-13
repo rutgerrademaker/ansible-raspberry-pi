@@ -62,7 +62,7 @@
         group: "{{ system_group }}"
         mode: "0600"
 
-    - name: Install Mosquitto service
+    - name: Install service mosquitto
       ansible.builtin.copy:
         src: mosquitto/etc/systemd/system/mosquitto.service
         dest: /etc/systemd/system/mosquitto.service
@@ -70,7 +70,12 @@
         owner: root
         group: root
 
-    - name: Start service mosquitto, if not started
+    - name: Enable service mosquitto
       ansible.builtin.service:
         name: mosquitto
-        state: started
+        enabled: true
+
+    - name: Start service mosquitto
+      ansible.builtin.service:
+        name: mosquitto
+        state: restarted

@@ -1,6 +1,6 @@
 [Unit]
 Description=Home Assistant (docker compose)
-Requires=docker.service
+Requires=mosquitto.service
 After=docker.service
 
 [Service]

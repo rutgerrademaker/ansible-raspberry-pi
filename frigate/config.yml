@@ -4,16 +4,158 @@ mqtt:
   topic_prefix: frigate
   client_id: frigate
   user: "frigate"
-  password: "__frigate_mosquitto_password___"
+  password: "___MOSQUITTO_FRIGATE_PASS___"
+  stats_interval: 60
+
+go2rtc:
+  streams:
+    webcam:
+      - rtsp://10.0.0.52:8554/webcam
 
 cameras:
-  FrontDoor:
+  webcam:
     ffmpeg:
-      inputs: 
-        - path: rtsp://192.168.1.88
+      output_args:
+        record: preset-record-generic-audio-copy
+      inputs:
+        - path: rtsp://10.0.0.52:8554/webcam # <--- the name here must match the name of the camera in restream
+          input_args: preset-rtsp-restream
           roles:
+            - record
             - detect
-            - rtmp
-    detect:
-      width: 1280
-      height: 800
+            - audio # <- only necessary if audio detection is enabled
+
+detectors:
+  # Required: name of the detector
+  coral:
+    # Required: type of the detector Valid
+    # values are 'edgetpu' (requires device
+    # property below) and 'cpu'.
+    type: edgetpu
+    # Optional: device name as defined here:
+    # https://coral.ai/docs/edgetpu/multiple-edgetpu/#using-the-tensorflow-lite-python-api
+    device: usb
+    # Optional: num_threads value passed to the
+    num_threads: 3
+
+record:
+  # Optional: Enable recording (default: shown below)
+  enabled: True
+  # Optional: Number of days to retain recordings regardless of events (default: shown below)
+  # NOTE: This should be set to 0 and retention should be defined in events section below
+  #       if you only want to retain recordings of events.
+  retain:
+    days: 0
+  # Optional: Event recording settings
+  events:
+    # Optional: Maximum length of time to retain video during long events. (default: shown below)
+    # NOTE: If an object is being tracked for longer than this amount of time, the retained recordings
+    #       will be the last x seconds of the event unless retain_days under record is > 0.
+    # max_seconds: 300
+    # Optional: Number of seconds before the event to include (default: shown below)
+    pre_capture: 5
+    # Optional: Number of seconds after the event to include (default: shown below)
+    post_capture: 5
+    # Optional: Objects to save recordings for. (default: all tracked objects)
+    objects:
+      - person
+      - bicycle
+      - car
+      - motorcycle
+      - airplane
+      - bus
+      - train
+      - car
+      - boat
+      - traffic light
+      - fire hydrant
+      - street sign
+      - stop sign
+      - parking meter
+      - bench
+      - bird
+      - cat
+      - dog
+      - horse
+      - sheep
+      - cow
+      - elephant
+      - bear
+      - zebra
+      - giraffe
+      - hat
+      - backpack
+      - umbrella
+      - shoe
+      - eye glasses
+      - handbag
+      - tie
+      - suitcase
+      - frisbee
+      - skis
+      - snowboard
+      - sports ball
+      - kite
+      - baseball bat
+      - baseball glove
+      - skateboard
+      - surfboard
+      - tennis racket
+      - bottle
+      - plate
+      - wine glass
+      - cup
+      - fork
+      - knife
+      - spoon
+      - bowl
+      - banana
+      - apple
+      - sandwich
+      - orange
+      - broccoli
+      - carrot
+      - hot dog
+      - pizza
+      - donut
+      - cake
+      - chair
+      - couch
+      - potted plant
+      - bed
+      - mirror
+      - dining table
+      - window
+      - desk
+      - toilet
+      - door
+      - tv
+      - laptop
+      - mouse
+      - remote
+      - keyboard
+      - cell phone
+      - microwave
+      - oven
+      - toaster
+      - sink
+      - refrigerator
+      - blender
+      - book
+      - clock
+      - vase
+      - scissors
+      - teddy bear
+      - hair drier
+      - toothbrush
+      - hair brush
+    # Optional: Restrict recordings to objects that entered any of the listed zones (default: no required zones)
+    required_zones: []
+    # Optional: Retention settings for recordings of events
+    retain:
+      # Required: Default retention days (default: shown below)
+      default: 1
+      # Optional: Per object retention days
+      objects:
+        person: 10
+        cat: 20

@@ -9,6 +9,6 @@ services:
       - /data/mosquitto/data:/mosquitto/data
     restart: unless-stopped
     network_mode: host
-    ports:
-      - 1883:1883
-      - 9001:9001
+    # ports:
+    #   - 1883:1883
+    #   - 9001:9001

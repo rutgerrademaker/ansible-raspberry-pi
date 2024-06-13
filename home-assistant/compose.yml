@@ -1,16 +1,37 @@
 services:
-  homeassistant:
+  home-assistant:
     container_name: home-assistant
     image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    network_mode: host
     devices:
       - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
       - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
     labels:
+      - "traefik.backend=home-assistant"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.home-assistant.rule=Host(`hass.local`)"
+      - "traefik.frontend.rule=Host:hass.local"
+      - "traefik.http.routers.home-assistant.entrypoints=web"
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`home-assistant`)"
-      - "traefik.http.routers.whoami.entrypoints=web"          
+      - "traefik.port=8123"
+      - "traefik.default.protocol=http"
+      - "traefik.http.services.home-assistant.loadbalancer.server.port=8123"
+    networks:
+       - public
+       - local
+    # ports:
+    #   - "8123:8123"
+    dns:
+      - '___DNS_1___'
+      - '___DNS_2___'
+
+networks:
+  local:
+     name: home-assistant
+
+  public:
+    external: true
+    name: "webproxy"

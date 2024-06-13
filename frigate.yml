@@ -49,7 +49,12 @@
         owner: root
         group: root
 
-    - name: Start service frigate, if not started
+    - name: Enable service frigate
       ansible.builtin.service:
         name: frigate
-        state: started
+        enabled: true
+
+    - name: Start service frigate
+      ansible.builtin.service:
+        name: frigate
+        state: restarted

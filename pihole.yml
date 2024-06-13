@@ -36,14 +36,20 @@
         group: root
 
     - name: Allow local usage of DNS
-      ansible.builtin.copy:
-        content: static domain_name_servers=127.0.0.1'
-        dest: dhcpcd.conf
-        mode: "0600"
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
+      ansible.builtin.lineinfile:
+        line: static domain_name_servers=10.0.0.54
+        state: present
+        create: true
+        path: /etc/dhcpcd.conf
+        mode: "0644"
+        owner: root
 
-    - name: Start service pihole, if not started
+    - name: Enable service pihole
+      ansible.builtin.service:
+        name: frigate
+        enabled: true
+
+    - name: Start service pihole
       ansible.builtin.service:
         name: pihole
-        state: started
+        state: restarted
