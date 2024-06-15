@@ -22,8 +22,8 @@ services:
     networks:
        - public
        - local
-    # ports:
-    #   - "8123:8123"
+    ports:
+      - "8123:8123"
     dns:
       - '___DNS_1___'
       - '___DNS_2___'

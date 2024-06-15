@@ -14,7 +14,7 @@
 
     - name: Minecraft Server install compose file
       ansible.builtin.copy:
-        src: minecraft-server/compose.yml
+        src: compose.yml
         dest: /data/minecraft-server/compose.yml
         mode: "0644"
         owner: "{{ system_user }}"

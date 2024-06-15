@@ -14,7 +14,7 @@
 
     - name: Install Home Assistant compose file
       ansible.builtin.copy:
-        src: home-assistant/compose.yml
+        src: compose.yml
         dest: /data/home-assistant/compose.yml
         owner: "{{ system_user }}"
         group: "{{ system_group }}"
@@ -52,7 +52,7 @@
 
     - name: Install Home Assistant service
       ansible.builtin.copy:
-        src: home-assistant/etc/systemd/system/home-assistant.service
+        src: etc/systemd/system/home-assistant.service
         dest: /etc/systemd/system/home-assistant.service
         mode: "0644"
         owner: root

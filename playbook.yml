@@ -8,6 +8,7 @@
         name: aptitude
         state: present
         update_cache: true
+        cache_valid_time: 86400 # One day
 
     - name: Update and upgrade apt packages
       ansible.builtin.apt:
@@ -28,33 +29,7 @@
           - python3-setuptools
         state: present
         update_cache: true
-
-    - name: Add Docker GPG apt Key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker Repository
-      ansible.builtin.apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-
-    - name: Update apt and install docker-ce
-      ansible.builtin.apt:
-        name: docker-ce
-        state: present
-        update_cache: true
-
-    - name: Create "docker" group
-      ansible.builtin.group:
-        name: "docker"
-        state: present
-
-    - name: Add system_user user to "docker" group
-      ansible.builtin.user:
-        name: "{{ system_user }}"
-        groups: "docker"
-        append: true
+        cache_valid_time: 86400 # One day
 
     - name: Check if a reboot is needed for Debian-based systems
       ansible.builtin.stat:
@@ -85,26 +60,26 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
-- name: Coral 
-  ansible.builtin.import_playbook: coral.yml
+- name: Coral
+  ansible.builtin.import_playbook: system/coral.yml
 
 - name: Network
-  ansible.builtin.import_playbook: network.yml
+  ansible.builtin.import_playbook: system/network.yml
 
 - name: Traefik
-  ansible.builtin.import_playbook: traefik.yml
+  ansible.builtin.import_playbook: traefik/playbook.yml
 
 - name: Mosquitto
-  ansible.builtin.import_playbook: mosquitto.yml
+  ansible.builtin.import_playbook: mosquitto/playbook.yml
 
 - name: Home Assistant
-  ansible.builtin.import_playbook: home-assistant.yml
+  ansible.builtin.import_playbook: home-assistant/playbook.yml
 
 - name: Minecraft Server
-  ansible.builtin.import_playbook: minecraft-server.yml
+  ansible.builtin.import_playbook: minecraft-server/playbook.yml
 
 - name: Pi Hole
-  ansible.builtin.import_playbook: pihole.yml
+  ansible.builtin.import_playbook: pihole/playbook.yml
 
 - name: Frigate NVR
-  ansible.builtin.import_playbook: frigate.yml
+  ansible.builtin.import_playbook: frigate/playbook.yml

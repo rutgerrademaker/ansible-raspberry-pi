@@ -16,7 +16,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Frigate NVR](#frigate-nvr)
     - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
     - [Traefik](#traefik)
-  - [Miscelaneaus](#miscelaneaus)
+  - [Miscelaneous](#miscelaneous)
     - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
   - [Prerequisites](#prerequisites)
     - [Install Ubuntu Server on the Pi](#install-ubuntu-server-on-the-pi)
@@ -82,7 +82,7 @@ As it was created after the whole playbook, I did not add this step to  playbook
 - Web interface: http://traefik.local/
 - Docs: https://traefik.io/
 
-## Miscelaneaus
+## Miscelaneous
 
 ### Coral TPU packages & drivers
 

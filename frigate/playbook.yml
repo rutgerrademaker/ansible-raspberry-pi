@@ -15,7 +15,7 @@
 
     - name: Install Frigate compose file
       ansible.builtin.copy:
-        src: frigate/compose.yml
+        src: compose.yml
         dest: /data/frigate/compose.yml
         owner: "{{ system_user }}"
         group: "{{ system_group }}"
@@ -23,7 +23,7 @@
 
     - name: Frigate install config file
       ansible.builtin.copy:
-        src: frigate/config.yml
+        src: config.yml
         dest: /data/frigate/config/config.yml
         owner: "{{ system_user }}"
         group: "{{ system_group }}"
@@ -43,7 +43,7 @@
 
     - name: Install Frigate service
       ansible.builtin.copy:
-        src: frigate/etc/systemd/system/frigate.service
+        src: etc/systemd/system/frigate.service
         dest: /etc/systemd/system/frigate.service
         mode: "0644"
         owner: root
