@@ -15,7 +15,7 @@
 
     - name: Pihole install compose file
       ansible.builtin.copy:
-        src: pihole/compose.yml
+        src: compose.yml
         dest: /data/pihole/compose.yml
         owner: "{{ system_user }}"
         group: "{{ system_group }}"
@@ -29,7 +29,7 @@
 
     - name: Pihole install service
       ansible.builtin.copy:
-        src: pihole/etc/systemd/system/pihole.service
+        src: etc/systemd/system/pihole.service
         dest: /etc/systemd/system/pihole.service
         mode: "0644"
         owner: root
@@ -46,7 +46,7 @@
 
     - name: Enable service pihole
       ansible.builtin.service:
-        name: frigate
+        name: pihole
         enabled: true
 
     - name: Start service pihole

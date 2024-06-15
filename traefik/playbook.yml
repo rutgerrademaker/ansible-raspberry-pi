@@ -14,7 +14,7 @@
 
     - name: Install compose file
       ansible.builtin.copy:
-        src: traefik/compose.yml
+        src: compose.yml
         dest: /data/traefik/compose.yml
         owner: "{{ system_user }}"
         group: "{{ system_group }}"
@@ -22,7 +22,7 @@
 
     - name: Traefik install service
       ansible.builtin.copy:
-        src: traefik/etc/systemd/system/traefik.service
+        src: etc/systemd/system/traefik.service
         dest: /etc/systemd/system/traefik.service
         mode: "0644"
         owner: root

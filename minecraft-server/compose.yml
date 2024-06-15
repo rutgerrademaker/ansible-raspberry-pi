@@ -15,7 +15,7 @@ services:
       RCON_CMDS_STARTUP:  |-
         gamerule doDaylightCycle false
     dns:
-      - "{{ dns_1 }}"
-      - "{{ dns_2 }}"
+      - '___DNS_1___'
+      - '___DNS_2___'
     volumes:
       - /data/minecraft-server:/data
