@@ -1,0 +1,15 @@
+[Unit]
+Description=Home Assistant (docker compose)
+Requires=mosquitto.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/immich
+ExecStart=/usr/bin/docker compose -f /data/immich/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/immich/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+- name: Install Immich
+  hosts: pi5
+  become: true
+  vars:
+    app_name: "immich"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ system_user }}"
+    app_group: "{{ system_group }}"
+  tasks:
+    - name: Create {{ app_name }} directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+      loop:
+         - "{{ app_dir }}"
+         - "{{ app_dir }}/postgres"
+         - "{{ app_dir }}/library"
+  
+    - name: Install {{ app_name }} files
+      ansible.builtin.copy:
+        src: "{{ item.src }}" 
+        dest: "{{ app_dir }}/"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+      loop:
+        - src: compose.yml
+        - src: .env
+
+    - name: Substitute {{ app_name }} secrets
+      ansible.builtin.replace:
+        path: "{{ item.src }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - src: "{{ app_dir }}/.env"
+          regexp: ___IMMICH_DB_USERNAME___
+          replace: "{{ immich_db_username }}"
+        - src: "{{ app_dir }}/.env"
+          regexp: ___IMMICH_DB_PASSWORD___
+          replace: "{{ immich_db_password }}"
+        - src: "{{ app_dir }}/compose.yml"
+          regexp:  ___APP_NAME___
+          replace: "{{ app_name }}"
+         
+
+    - name: Install {{ app_name }} service
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ app_name }}.service"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Enable {{ app_name }} service
+      ansible.builtin.service:
+        name: "{{ app_name }}" 
+        enabled: true
+
+    - name: Start {{ app_name }} service
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        state: restarted
