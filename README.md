@@ -14,10 +14,11 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Unifi Network Application](#unifi-network-application)
     - [Minecraft server](#minecraft-server)
     - [Frigate NVR](#frigate-nvr)
-    - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
     - [Traefik](#traefik)
+    - [Immich](#immich)
   - [Miscellaneous](#miscellaneous)
     - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
+    - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
   - [Prerequisites](#prerequisites)
     - [Install Ubuntu Server on the Pi](#install-ubuntu-server-on-the-pi)
     - [Inventory](#inventory)
@@ -71,16 +72,19 @@ cd /data/minecraft server && docker compose down
 - Web interface: http://frigate.local/
 - Docs: https://docs.frigate.video/
 
-### Home Assistant + Mosquitto migration script
-
-The `migrate.yml` playbook will copy all data from an old pi (p4) to a new pi (p5)
-It has to run as `root`, as some files (like HA's auth file) are owner by root on the source system.
-As it was created after the whole playbook, I did not add this step to  playbook.yml.
-
 ### Traefik
+
+Reverse proxy and ingress controller
 
 - Web interface: http://traefik.local/
 - Docs: https://traefik.io/
+
+### Immich
+
+Self-hosted photo and video management solution
+
+- Web interface: http://immich.local/
+- Docs: https://immich.app/
 
 ## Miscellaneous
 
@@ -89,6 +93,12 @@ As it was created after the whole playbook, I did not add this step to  playbook
 Used for object detection in Frigate
 
 - https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
+
+### Home Assistant + Mosquitto migration script
+
+The `migrate.yml` playbook will copy all data from an old pi (p4) to a new pi (p5)
+It has to run as `root`, as some files (like HA's auth file) are owner by root on the source system.
+As it was created after the whole playbook, I did not add this step to  playbook.yml.
 
 ## Prerequisites
 
@@ -141,6 +151,9 @@ mosquitto_frigate_pass: "YourSecretMosquittoFrigatePassword"
 frigate_rtsp_password: "YourSecretFrigateRtspPassword"
 
 pihole_webpassword: "YourSecretPiHolePassword"
+
+immich_db_username: "immich"
+immich_db_password: "YourSecretImmichDbPassword"
 ```
 
 ```shell

@@ -83,3 +83,6 @@
 
 - name: Frigate NVR
   ansible.builtin.import_playbook: frigate/playbook.yml
+
+- name: Immich
+  ansible.builtin.import_playbook: immich/playbook.yml
