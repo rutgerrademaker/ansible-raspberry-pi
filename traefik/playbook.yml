@@ -1,13 +1,19 @@
 - name: Install Traefik
-  hosts: pi5
+  hosts: pi5,pihole
   become: true
+  vars:
+    app_name: "traefik"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+
   tasks:
     - name: Create directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0755"
       loop:
         - /data/traefik
@@ -16,8 +22,8 @@
       ansible.builtin.copy:
         src: compose.yml
         dest: /data/traefik/compose.yml
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0600"
 
     - name: Traefik install service
@@ -27,6 +33,22 @@
         mode: "0644"
         owner: root
         group: root
+
+    - name: "Substitute secrets for {{ app_name }}"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___DNS_1___"
+          replace: "{{ dns_1 }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___DNS_2___"
+          replace: "{{ dns_2 }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___SERVER_NUMBER___"
+          replace: "{{ server_number }}"
 
     - name: Enable traefik service
       ansible.builtin.service:

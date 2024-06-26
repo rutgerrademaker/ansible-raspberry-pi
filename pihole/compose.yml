@@ -1,35 +1,35 @@
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
+    container_name: "pihole"
+    image: "pihole/pihole:latest"
     ports:
       - "53:53/tcp"
       - "53:53/udp"
     environment:
-      TZ: 'Europe/Amsterdam'
-      WEBPASSWORD: '___WEBPASSWORD___'
+      TZ: "Europe/Amsterdam"
+      WEBPASSWORD: "___WEBPASSWORD___"
     volumes:
-      - '/data/pihole/etc-pihole:/etc/pihole'
-      - '/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
-    restart: unless-stopped
+      - "/data/pihole/etc-pihole:/etc/pihole"
+      - "/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+    restart: "unless-stopped"
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole.local`)"
+      - "traefik.http.routers.pihole.rule=Host(`pihole___SERVER_NUMBER___.local`)"
       - "traefik.http.routers.pihole.entrypoints=web"
       - "traefik.backend=pihole" 
-      - "traefik.frontend.rule=Host:pihole.local"
+      - "traefik.frontend.rule=Host:___SERVER_NUMBER___.local"
       - "traefik.port=80"
       - "traefik.default.protocol=http"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
     networks:
-      - local
-      - public
+      - "local"
+      - "public"
 
 networks:
   local:
-     name: pihole
+     name: "pihole"
 
   public:
     external: true

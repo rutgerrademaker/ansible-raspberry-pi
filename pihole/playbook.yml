@@ -1,55 +1,73 @@
 - name: Install Pihole
-  hosts: pi5
+  hosts: pihole
   become: true
-
+  vars:
+    app_name: "pihole"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+  
   tasks:
-    - name: Create pihole directories
+    - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0755"
       loop:
-        - /data/pihole
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/etc-pihole"
 
-    - name: Pihole install compose file
+    - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
-        src: compose.yml
-        dest: /data/pihole/compose.yml
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
-        mode: "0600"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      loop:
+        - src: "compose.yml"
+          dest: "{{ app_dir }}/compose.yml"
+        - src: "etc-pihole/custom.list"
+          dest: "{{ app_dir }}/etc-pihole/custom.list"
 
-    - name: Substitute password
+    - name: "Substitute secrets for {{ app_name }}"
       ansible.builtin.replace:
-        path: /data/pihole/compose.yml
-        regexp: '___WEBPASSWORD___'
-        replace: '{{ pihole_webpassword }}'
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: '___WEBPASSWORD___'
+          replace: '{{ pihole_webpassword }}'
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: '___SERVER_NUMBER___'
+          replace: '{{ server_number }}'
 
-    - name: Pihole install service
+    - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:
-        src: etc/systemd/system/pihole.service
-        dest: /etc/systemd/system/pihole.service
+        src: "etc/systemd/system/{{ app_name }}.service"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
         mode: "0644"
         owner: root
         group: root
 
     - name: Allow local usage of DNS
       ansible.builtin.lineinfile:
-        line: static domain_name_servers=10.0.0.54
+        line: "static domain_name_servers={{ ansible_ssh_host }}"
         state: present
         create: true
         path: /etc/dhcpcd.conf
         mode: "0644"
         owner: root
 
-    - name: Enable service pihole
+    - name: "Enable service {{ app_name }}"
       ansible.builtin.service:
-        name: pihole
+        name: "{{ app_name }}"
         enabled: true
 
-    - name: Start service pihole
+    - name: "Start service {{ app_name }}"
       ansible.builtin.service:
-        name: pihole
+        name: "{{ app_name }}"
         state: restarted

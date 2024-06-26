@@ -6,8 +6,9 @@
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ system_user }}"
     app_group: "{{ system_group }}"
+
   tasks:
-    - name: Create {{ app_name }} directories
+    - name: "Create directories for {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -15,13 +16,13 @@
         group: "{{ app_group }}"
         mode: "0755"
       loop:
-         - "{{ app_dir }}"
-         - "{{ app_dir }}/postgres"
-         - "{{ app_dir }}/library"
-  
-    - name: Install {{ app_name }} files
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/postgres"
+        - "{{ app_dir }}/library"
+
+    - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
-        src: "{{ item.src }}" 
+        src: "{{ item.src }}"
         dest: "{{ app_dir }}/"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
@@ -30,7 +31,7 @@
         - src: compose.yml
         - src: .env
 
-    - name: Substitute {{ app_name }} secrets
+    - name: "Substitute secrets for {{ app_name }}"
       ansible.builtin.replace:
         path: "{{ item.src }}"
         regexp: "{{ item.regexp }}"
@@ -43,11 +44,10 @@
           regexp: ___IMMICH_DB_PASSWORD___
           replace: "{{ immich_db_password }}"
         - src: "{{ app_dir }}/compose.yml"
-          regexp:  ___APP_NAME___
+          regexp: ___APP_NAME___
           replace: "{{ app_name }}"
-         
 
-    - name: Install {{ app_name }} service
+    - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:
         src: "etc/systemd/system/{{ app_name }}.service"
         dest: "/etc/systemd/system/{{ app_name }}.service"
@@ -55,12 +55,12 @@
         owner: root
         group: root
 
-    - name: Enable {{ app_name }} service
+    - name: "Enable service {{ app_name }}"
       ansible.builtin.service:
-        name: "{{ app_name }}" 
+        name: "{{ app_name }}"
         enabled: true
 
-    - name: Start {{ app_name }} service
+    - name: "Start service {{ app_name }}"
       ansible.builtin.service:
         name: "{{ app_name }}"
         state: restarted

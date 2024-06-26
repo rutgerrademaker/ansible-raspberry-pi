@@ -29,12 +29,16 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Pi Hole
 
+Network-wide Ad Blocking.
+
 - Web interface: http://pihole.local/
 - Docs: https://pi-hole.net/
 - Docs: https://github.com/pi-hole/docker-pi-hole
 - Starts on (re)boot
 
 ### Home Assistant
+
+Open source home automation that puts local control and privacy first.
 
 - Web interface: http://hass.local/
 - Docs: https://www.home-assistant.io/
@@ -43,12 +47,16 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Mosquitto
 
+An open source MQTT broker.
+
 - See https://mosquitto.org/
 - Used for IOT devices, used by to Home Assistant
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
 ### Unifi Network Application
+
+Self-Hosted a UniFi Network Server.
 
 - Web interface: http://unifi.local/
 - Docs https://github.com/linuxserver/docker-unifi-network-application
@@ -69,19 +77,21 @@ cd /data/minecraft server && docker compose down
 
 ### Frigate NVR
 
+Monitor your security cameras with locally processed AI.
+
 - Web interface: http://frigate.local/
 - Docs: https://docs.frigate.video/
 
 ### Traefik
 
-Reverse proxy and ingress controller
+Reverse proxy and ingress controller.
 
 - Web interface: http://traefik.local/
 - Docs: https://traefik.io/
 
 ### Immich
 
-Self-hosted photo and video management solution
+Self-hosted photo and video management solution.
 
 - Web interface: http://immich.local/
 - Docs: https://immich.app/
@@ -90,7 +100,7 @@ Self-hosted photo and video management solution
 
 ### Coral TPU packages & drivers
 
-Used for object detection in Frigate
+Used for object detection in Frigate.
 
 - https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
 
@@ -207,3 +217,5 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
 - Allow unifi to adopt devices via traefik on http://unifi.local:8808 instead of IP address.
+- Add Gpodder
+- Add Nextcloud?

@@ -1,6 +1,6 @@
 ---
 - name: Install Docker
-  hosts: pi5
+  hosts: pi5,pihole
   become: true
   tasks:
     - name: Add Docker GPG apt Key
@@ -25,8 +25,8 @@
         name: "docker"
         state: present
 
-    - name: Add system_user user to "docker" group
+    - name: Add ansible_user user to "docker" group
       ansible.builtin.user:
-        name: "{{ system_user }}"
+        name: "{{ ansible_user }}"
         groups: "docker"
         append: true

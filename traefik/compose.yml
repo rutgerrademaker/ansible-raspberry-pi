@@ -23,13 +23,16 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.local`)"
-      - "traefik.frontend.rule=Host:traefik.local"
+      - "traefik.http.routers.traefik.rule=Host(`traefik___SERVER_NUMBER___.local`)"
+      - "traefik.frontend.rule=Host:traefik___SERVER_NUMBER___.local"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.backend=traefik" 
       - "traefik.port=8080"
       - "traefik.default.protocol=http"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    dns:
+      - '___DNS_1___'
+      - '___DNS_2___'
 
 networks:
   public:

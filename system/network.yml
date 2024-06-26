@@ -1,5 +1,5 @@
 - name: Disable Systemd Resolved
-  hosts: pi5
+  hosts: pi5,pihole
   become: true
   handlers:
     - name: Remove STUB
