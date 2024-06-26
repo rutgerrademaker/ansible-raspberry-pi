@@ -6,7 +6,7 @@
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
-  
+
   tasks:
     - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:

@@ -20,6 +20,3 @@ network:
             addresses: [___WLAN0_IP___]
             nameservers:
                 addresses: [___DNS_1___,___DNS_2___]
-            routes:
-                - to: default
-                  via: ___GATEWAY_IP___    
