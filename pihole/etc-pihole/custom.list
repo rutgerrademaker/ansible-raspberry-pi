@@ -1,0 +1,15 @@
+10.0.0.53 hass.local
+10.0.0.53 frigate.local
+10.0.0.53 immich.local
+10.0.0.53 mosquitto.local
+10.0.0.53 unifi.local
+10.0.0.40 nas.local
+10.0.0.42 opendtu.local
+
+10.0.0.50 pihole1.local
+10.0.0.52 pihole2.local
+10.0.0.53 pihole3.local
+
+10.0.0.50 traefik1.local
+10.0.0.52 traefik2.local
+10.0.0.53 traefik3.local
