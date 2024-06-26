@@ -205,6 +205,8 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
 - Quotes are not (yet) used consistent.
+- Unifi users can nog log in via unifi.local
+- .local domains should change as this is a reserver tld.
 
 ## Wishlist / TODO
 
