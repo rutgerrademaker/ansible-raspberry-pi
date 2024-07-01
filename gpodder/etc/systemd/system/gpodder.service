@@ -1,6 +1,5 @@
 [Unit]
-Description=Home Assistant (docker compose)
-Requires=mosquitto.service
+Description=Gpodder (docker compose)
 After=docker.service
 
 [Service]
@@ -13,9 +12,3 @@ TimeoutStartSec=0
 
 [Install]
 WantedBy=multi-user.target
-
-
-network.proxy_hostname
-network.proxy_port
-network.proxy_username
-network.proxy_password
