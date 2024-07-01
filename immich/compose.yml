@@ -18,6 +18,7 @@ services:
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
+      - /data/photos:/data/photos:ro
     env_file:
       - .env
     ports:
@@ -25,7 +26,7 @@ services:
     depends_on:
       - redis
       - database
-    restart: always
+    restart: unless-stopped
     labels:
       - "traefik.backend=___APP_NAME___"
       - "traefik.docker.network=webproxy"
@@ -33,7 +34,7 @@ services:
       - "traefik.frontend.rule=Host:___APP_NAME___.local"
       - "traefik.http.routers.___APP_NAME___.entrypoints=web"
       - "traefik.enable=true"
-      - "traefik.port3001"
+      - "traefik.port=3001"
       - "traefik.default.protocol=http"
       - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=3001"
     networks:

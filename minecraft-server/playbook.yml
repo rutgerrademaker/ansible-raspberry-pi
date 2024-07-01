@@ -1,6 +1,11 @@
 - name: Install Minecraft Server
   hosts: pi5
   become: true
+  vars:
+    app_name: "minecraft-server"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ system_user }}"
+    app_group: "{{ system_group }}"
   tasks:
     - name: Create Minecraft Server directories
       ansible.builtin.file:
@@ -31,3 +36,21 @@
         path: /data/minecraft-server/compose.yml
         regexp: '___DNS_2___'
         replace: '{{ dns_2 }}'
+
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ app_name }}.service"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Enable service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        enabled: true
+
+    - name: "Start service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        state: restarted
