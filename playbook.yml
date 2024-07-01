@@ -61,29 +61,29 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
-# - name: Coral
-#   ansible.builtin.import_playbook: system/coral.yml
+- name: Coral
+  ansible.builtin.import_playbook: system/coral.yml
 
-# - name: Network
-#   ansible.builtin.import_playbook: system/network.yml
+- name: Network
+  ansible.builtin.import_playbook: system/network.yml
 
-# - name: Traefik
-#   ansible.builtin.import_playbook: traefik/playbook.yml
+- name: Traefik
+  ansible.builtin.import_playbook: traefik/playbook.yml
 
-# - name: Mosquitto
-#   ansible.builtin.import_playbook: mosquitto/playbook.yml
+- name: Mosquitto
+  ansible.builtin.import_playbook: mosquitto/playbook.yml
 
-# - name: Home Assistant
-#   ansible.builtin.import_playbook: home-assistant/playbook.yml
+- name: Home Assistant
+  ansible.builtin.import_playbook: home-assistant/playbook.yml
 
-# - name: Minecraft Server
-#   ansible.builtin.import_playbook: minecraft-server/playbook.yml
+- name: Minecraft Server
+  ansible.builtin.import_playbook: minecraft-server/playbook.yml
 
-# - name: Pi Hole
-#   ansible.builtin.import_playbook: pihole/playbook.yml
+- name: Pi Hole
+  ansible.builtin.import_playbook: pihole/playbook.yml
 
-# - name: Frigate NVR
-#   ansible.builtin.import_playbook: frigate/playbook.yml
+- name: Frigate NVR
+  ansible.builtin.import_playbook: frigate/playbook.yml
 
-# - name: Immich
-#   ansible.builtin.import_playbook: immich/playbook.yml
+- name: Immich
+  ansible.builtin.import_playbook: immich/playbook.yml
