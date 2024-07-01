@@ -1,0 +1,21 @@
+[Unit]
+Description=Home Assistant (docker compose)
+Requires=mosquitto.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/gpodder
+ExecStart=/usr/bin/docker compose -f /data/gpodder/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/gpodder/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
+
+
+network.proxy_hostname
+network.proxy_port
+network.proxy_username
+network.proxy_password
