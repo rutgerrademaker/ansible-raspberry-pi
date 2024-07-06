@@ -1,0 +1,15 @@
+[Unit]
+Description=Portainer (docker compose)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/portainer
+ExecStart=/usr/bin/docker compose -f /data/portainer/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/portainer/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

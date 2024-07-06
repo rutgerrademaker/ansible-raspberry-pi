@@ -1,0 +1,38 @@
+services:
+  gpodder:
+    image: xthursdayx/gpodder-docker
+    container_name: gpodder
+    environment:
+      - TZ=America/New_York
+      #- PASSWORD=___PASSWORD___
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/___APP_NAME___/config:/config
+      - /data/___APP_NAME___/downloads:/downloads
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - 3000:3000
+      - 18123:8123
+    restart: unless-stopped
+    labels:
+      - "traefik.backend=___APP_NAME___"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.home`)"
+      - "traefik.frontend.rule=Host:___APP_NAME___.home"
+      - "traefik.http.routers.___APP_NAME___.entrypoints=web"
+      - "traefik.enable=true"
+      #- "traefik.port=3000"
+      - "traefik.default.protocol=http"
+      - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=3000"
+    networks:
+       - public
+       - local
+  
+networks:
+  local:
+     name: ___APP_NAME___
+
+  public:
+    external: true
+    name: "webproxy"
+  

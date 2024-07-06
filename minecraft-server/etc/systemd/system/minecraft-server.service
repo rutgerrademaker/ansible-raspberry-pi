@@ -1,0 +1,15 @@
+[Unit]
+Description=Minecraft Server (docker compose)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/minecraft-server
+ExecStart=/usr/bin/docker compose -f /data/minecraft-server/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/minecraft-server/compose.yml down
+TimeoutStartSec=10
+
+[Install]
+WantedBy=multi-user.target

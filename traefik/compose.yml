@@ -21,15 +21,18 @@ services:
       - public
       - local
     labels:
+      - "traefik.backend=___APP_NAME___"
       - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.___HOSTNAME___.home`)"
+      - "traefik.frontend.rule=Host:___APP_NAME___.___HOSTNAME___.home"
+      - "traefik.http.routers.___APP_NAME___.entrypoints=web"
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.local`)"
-      - "traefik.frontend.rule=Host:traefik.local"
-      - "traefik.http.routers.traefik.entrypoints=web"
-      - "traefik.backend=traefik" 
       - "traefik.port=8080"
       - "traefik.default.protocol=http"
-      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=8080"
+    dns:
+      - '___DNS_1___'
+      - '___DNS_2___'
 
 networks:
   public:

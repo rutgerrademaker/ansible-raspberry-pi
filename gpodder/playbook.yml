@@ -1,8 +1,8 @@
-- name: Install Immich
+- name: Install Gpodder
   hosts: pi5
   become: true
   vars:
-    app_name: "immich"
+    app_name: "gpodder"
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ system_user }}"
     app_group: "{{ system_group }}"
@@ -17,8 +17,8 @@
         mode: "0755"
       loop:
         - "{{ app_dir }}"
-        - "{{ app_dir }}/postgres"
-        - "{{ app_dir }}/library"
+        - "{{ app_dir }}/config"
+        - "{{ app_dir }}/downloads"
 
     - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
@@ -29,7 +29,6 @@
         mode: "0600"
       loop:
         - src: compose.yml
-        - src: .env
 
     - name: "Substitute secrets for {{ app_name }}"
       ansible.builtin.replace:
@@ -37,14 +36,11 @@
         regexp: "{{ item.regexp }}"
         replace: '{{ item.replace }}'
       loop:
-        - src: "{{ app_dir }}/.env"
-          regexp: "___IMMICH_DB_USERNAME___"
-          replace: "{{ immich_db_username }}"
-        - src: "{{ app_dir }}/.env"
-          regexp: "___IMMICH_DB_PASSWWORD___"
-          replace: "{{ immich_db_password }}"
         - src: "{{ app_dir }}/compose.yml"
-          regexp: "___APP_NAME___"
+          regexp: ___GPODDER_PASSWORD___
+          replace: "{{ gpodder_password }}"
+        - src: "{{ app_dir }}/compose.yml"
+          regexp: ___APP_NAME___
           replace: "{{ app_name }}"
 
     - name: "Install service for {{ app_name }}"

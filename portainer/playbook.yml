@@ -1,14 +1,14 @@
-- name: Install Traefik
-  hosts: pi5,pihole
+- name: Install Portainer
+  hosts: pihole
   become: true
   vars:
-    app_name: "traefik"
+    app_name: "portainer"
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
 
   tasks:
-    - name: Create directories
+    - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -16,23 +16,18 @@
         group: "{{ app_group }}"
         mode: "0755"
       loop:
-        - /data/traefik
+        - "{{ app_dir }}"
 
-    - name: Install compose file
+    - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
-        src: compose.yml
-        dest: /data/traefik/compose.yml
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
-        mode: "0600"
-
-    - name: Traefik install service
-      ansible.builtin.copy:
-        src: etc/systemd/system/traefik.service
-        dest: /etc/systemd/system/traefik.service
         mode: "0644"
-        owner: root
-        group: root
+      loop:
+        - src: "compose.yml"
+          dest: "{{ app_dir }}/compose.yml"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
@@ -41,27 +36,26 @@
         replace: '{{ item.replace }}'
       loop:
         - path: "{{ app_dir }}/compose.yml"
-          regexp: "___DNS_1___"
-          replace: "{{ dns_1 }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___DNS_2___"
-          replace: "{{ dns_2 }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___SERVER_NUMBER___"
-          replace: "{{ server_number }}"
-        - path: "{{ app_dir }}/compose.yml"
           regexp: "___APP_NAME___"
           replace: "{{ app_name }}"
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___HOSTNAME___"
           replace: '{{ ansible_hostname }}'
 
-    - name: Enable traefik service
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ app_name }}.service"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Enable service {{ app_name }}"
       ansible.builtin.service:
-        name: traefik
+        name: "{{ app_name }}"
         enabled: true
 
-    - name: Start service traefik, if not started
+    - name: "Start service {{ app_name }}"
       ansible.builtin.service:
-        name: traefik
+        name: "{{ app_name }}"
         state: restarted

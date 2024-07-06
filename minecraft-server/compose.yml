@@ -1,7 +1,5 @@
-version: "3.8"
-
 services:
-  mc:
+  minecraft-server:
     image: itzg/minecraft-bedrock-server
     tty: true
     stdin_open: true
@@ -19,3 +17,9 @@ services:
       - '___DNS_2___'
     volumes:
       - /data/minecraft-server:/data
+    networks:
+       - public
+
+networks:
+  public:
+    name: "minecraft-server"      
