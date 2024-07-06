@@ -32,13 +32,14 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 ### Adminer
 
-Database management in a single PHP file.
+Database management in a single PHP file (but then in docker).
 
 - Web interface:
   - http://adminer.pi4.home/
   - http://adminer.pi5.home/
 
 For now this only has access to the `immich` network.
+It can be started from the `/data/adminer` directory with the `docker compose up -d` command.
 
 ### Frigate NVR
 
