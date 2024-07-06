@@ -9,14 +9,16 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 - [Ansible script to provision a raspberry Pi](#ansible-script-to-provision-a-raspberry-pi)
   - [Features](#features)
     - [Adminer](#adminer)
-    - [Pi Hole](#pi-hole)
-    - [Home Assistant](#home-assistant)
-    - [Mosquitto](#mosquitto)
-    - [Unifi Network Application](#unifi-network-application)
-    - [Minecraft server](#minecraft-server)
     - [Frigate NVR](#frigate-nvr)
-    - [Traefik](#traefik)
+    - [Gpodder](#gpodder)
+    - [Home Assistant](#home-assistant)
     - [Immich](#immich)
+    - [Minecraft server](#minecraft-server)
+    - [Mosquitto](#mosquitto)
+    - [Pi Hole](#pi-hole)
+    - [Portainer CE](#portainer-ce)
+    - [Unifi Network Application](#unifi-network-application)
+    - [Traefik](#traefik)
   - [Miscellaneous](#miscellaneous)
     - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
     - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
@@ -31,32 +33,43 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 ### Adminer
 
 Database management in a single PHP file.
-Urls are based on the configured `server_name` in the ansible inventory.
+
 - Web interface:
+  - http://adminer.pi4.home/
   - http://adminer.pi5.home/
 
 For now this only has access to the `immich` network.
 
-### Pi Hole
+### Frigate NVR
 
-Network-wide Ad Blocking. 
-Urls are based on the configured `server_number` in the ansible inventory.
+Monitor your security cameras with locally processed AI.
 
-- Web interface:
-  - http://pihole.pi5.home/admin/
-  - http://pihole.pi4.home/admin/
-  - http://pihole.pi1.home/admin/
-- Docs: https://pi-hole.net/
-- Docs: https://github.com/pi-hole/docker-pi-hole
+- Web interface: http://frigate.home/
+- Docs: https://docs.frigate.video/
+
+### Gpodder
+
+Media aggregator and podcast client
 
 ### Home Assistant
 
 Open source home automation that puts local control and privacy first.
 
-- Web interface: http://hass.local/
+- Web interface: http://hass.home/
 - Docs: https://www.home-assistant.io/
 - Docs: https://www.home-assistant.io/installation/raspberrypi/#docker-compose
 - Starts on (re)boot
+
+### Immich
+
+Self-hosted photo and video management solution.
+
+- Web interface: http://immich.home/
+- Docs: https://immich.app/
+
+### Minecraft server
+
+- See https://github.com/itzg/docker-minecraft-bedrock-server
 
 ### Mosquitto
 
@@ -67,38 +80,41 @@ An open source MQTT broker.
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
+### Pi Hole
+
+Network-wide Ad Blocking. 
+Urls are based on the configured `server_number` in the ansible inventory.
+
+- Web interface:
+  - http://pihole.pi5.home/admin/
+  - http://pihole.pi4.home/admin/
+- Docs: https://pi-hole.net/
+- Docs: https://github.com/pi-hole/docker-pi-hole
+
+### Portainer CE
+
+Simplify Container Management Across Kubernetes and Docker
+
+- Web interface: 
+  - http://portainer.pi4.home/
+  - http://portainer.pi5.home/
+- Docs: https://www.portainer.io/
+
 ### Unifi Network Application
 
 Self-Hosted a UniFi Network Server.
 
-- Web interface: http://unifi.local/
+- Web interface: http://unifi.home:8443/
 - Docs https://github.com/linuxserver/docker-unifi-network-application
-- Starts on (re)boot
-
-### Minecraft server
-
-- See https://github.com/itzg/docker-minecraft-bedrock-server
-
-### Frigate NVR
-
-Monitor your security cameras with locally processed AI.
-
-- Web interface: http://frigate.local/
-- Docs: https://docs.frigate.video/
 
 ### Traefik
 
 Reverse proxy and ingress controller.
 
-- Web interface: http://traefik.local/
+- Web interface: 
+  - http://traefik.pi4.home/
+  - http://traefik.pi5.home/
 - Docs: https://traefik.io/
-
-### Immich
-
-Self-hosted photo and video management solution.
-
-- Web interface: http://immich.local/
-- Docs: https://immich.app/
 
 ## Miscellaneous
 
@@ -133,9 +149,10 @@ I used [Raspbery PI imager](https://ubuntu.com/download/raspberry-pi) but other 
 The repository assumes your `etc/ansible/hosts` file looks like e.g:
 
 ```yaml
-pi5:
+homeserver:
   hosts:
-    10.0.0.53:
+    pi5:
+      ansible_host: 10.0.0.53
       system_user: rutger
       system_group: rutger
       dns_1: "1.1.1.1"
@@ -209,8 +226,7 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
 - Quotes are not (yet) used consistent.
-- Unifi users can nog log in via unifi.local
-- .local domains should change as this is a reserver tld.
+- Unifi users can nog log in via unifi.home
 - immich .env file van not have $ in value, even if between " quotes
 - Gpodder does not yet work as expected (using it as a sync server does not yet work)
 - Portainer and Adminer might be to powerful to expose directly, maybe add exta/basic auth (via Traefik?)
@@ -225,5 +241,5 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Automate creating DNS records in OpenWRT.
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
-- Allow unifi to adopt devices via traefik on http://unifi.local:8808 instead of IP address.
+- Allow unifi to adopt devices via traefik on http://unifi.home:8808 instead of IP address.
 - Add Nextcloud?
