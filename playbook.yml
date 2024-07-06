@@ -26,6 +26,7 @@
           - python3-pip
           - software-properties-common
           - virtualenv
+          - python3-docker
           - python3-setuptools
           - sshfs
         state: present
@@ -87,3 +88,15 @@
 
 - name: Immich
   ansible.builtin.import_playbook: immich/playbook.yml
+
+- name: Portainer
+  ansible.builtin.import_playbook: portainer/playbook.yml
+
+- name: Adminer
+  ansible.builtin.import_playbook: adminer/playbook.yml
+
+- name: Unifi
+  ansible.builtin.import_playbook: unifi/playbook.yml
+
+- name: Portainer
+  ansible.builtin.import_playbook: portainer/playbook.yml

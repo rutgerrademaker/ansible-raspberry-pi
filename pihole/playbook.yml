@@ -32,18 +32,21 @@
         - src: "etc-pihole/custom.list"
           dest: "{{ app_dir }}/etc-pihole/custom.list"
 
-    - name: "Substitute secrets for {{ app_name }}"
+    - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
         path: "{{ item.path }}"
         regexp: "{{ item.regexp }}"
         replace: '{{ item.replace }}'
       loop:
         - path: "{{ app_dir }}/compose.yml"
-          regexp: '___WEBPASSWORD___'
-          replace: '{{ pihole_webpassword }}'
+          regexp: "___WEBPASSWORD___"
+          replace: "{{ pihole_webpassword }}"
         - path: "{{ app_dir }}/compose.yml"
-          regexp: '___SERVER_NUMBER___'
-          replace: '{{ server_number }}'
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___HOSTNAME___"
+          replace: '{{ ansible_hostname }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:

@@ -8,6 +8,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
 
 - [Ansible script to provision a raspberry Pi](#ansible-script-to-provision-a-raspberry-pi)
   - [Features](#features)
+    - [Adminer](#adminer)
     - [Pi Hole](#pi-hole)
     - [Home Assistant](#home-assistant)
     - [Mosquitto](#mosquitto)
@@ -27,14 +28,26 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
   - [Known issues](#known-issues)
   - [Wishlist / TODO](#wishlist--todo)
 
+### Adminer
+
+Database management in a single PHP file.
+Urls are based on the configured `server_name` in the ansible inventory.
+- Web interface:
+  - http://adminer.pi5.home/
+
+For now this only has access to the `immich` network.
+
 ### Pi Hole
 
-Network-wide Ad Blocking.
+Network-wide Ad Blocking. 
+Urls are based on the configured `server_number` in the ansible inventory.
 
-- Web interface: http://pihole.local/
+- Web interface:
+  - http://pihole.pi5.home/admin/
+  - http://pihole.pi4.home/admin/
+  - http://pihole.pi1.home/admin/
 - Docs: https://pi-hole.net/
 - Docs: https://github.com/pi-hole/docker-pi-hole
-- Starts on (re)boot
 
 ### Home Assistant
 
@@ -65,15 +78,6 @@ Self-Hosted a UniFi Network Server.
 ### Minecraft server
 
 - See https://github.com/itzg/docker-minecraft-bedrock-server
-- Must be started and stopped manually
-
-```shell
-# Start minecraft server
-cd /data/minecraft server && docker compose up -d
-
-# Stop minecraft server
-cd /data/minecraft server && docker compose down
-```
 
 ### Frigate NVR
 
@@ -207,6 +211,9 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Quotes are not (yet) used consistent.
 - Unifi users can nog log in via unifi.local
 - .local domains should change as this is a reserver tld.
+- immich .env file van not have $ in value, even if between " quotes
+- Gpodder does not yet work as expected (using it as a sync server does not yet work)
+- Portainer and Adminer might be to powerful to expose directly, maybe add exta/basic auth (via Traefik?)
 
 ## Wishlist / TODO
 
@@ -219,5 +226,4 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
 - Allow unifi to adopt devices via traefik on http://unifi.local:8808 instead of IP address.
-- Add Gpodder
 - Add Nextcloud?

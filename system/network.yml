@@ -60,7 +60,7 @@
       ansible.builtin.replace:
         path: /etc/netplan/50-cloud-init.yaml
         regexp: '___GATEWAY_IP___'
-        replace: '10.0.0.1'
+        replace: '{{ gateway_ip }}'
 
     - name: Set default as DNS operational mode
       community.general.ini_file:

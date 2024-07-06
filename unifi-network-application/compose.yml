@@ -32,10 +32,10 @@ services:
     labels:
       - traefik.docker.network=webproxy
       - traefik.enable=true
-      - traefik.http.routers.unifi.rule=Host(`unifi.local`)
+      - traefik.http.routers.unifi.rule=Host(`unifi.home`)
       - traefik.http.routers.unifi.entrypoints=web
       - traefik.backend=unifi
-      - traefik.frontend.rule=Host:unifi.local
+      - traefik.frontend.rule=Host:unifi.home
       - traefik.port=8443
       - traefik.default.protocol=http
       - traefik.http.services.unifi.loadbalancer.server.port=8443
@@ -49,6 +49,7 @@ services:
     container_name: unifi-mongo-db
     volumes:
       - /data/mongo-db:/data/db
+      - /data/unfifmongo-db/logs:/data/db 
       - /data/mongo-db/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     restart: unless-stopped
     networks:

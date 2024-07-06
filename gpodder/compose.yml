@@ -17,8 +17,8 @@ services:
     labels:
       - "traefik.backend=___APP_NAME___"
       - "traefik.docker.network=webproxy"
-      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.local`)"
-      - "traefik.frontend.rule=Host:___APP_NAME___.local"
+      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.home`)"
+      - "traefik.frontend.rule=Host:___APP_NAME___.home"
       - "traefik.http.routers.___APP_NAME___.entrypoints=web"
       - "traefik.enable=true"
       #- "traefik.port=3000"
@@ -35,3 +35,4 @@ networks:
   public:
     external: true
     name: "webproxy"
+  

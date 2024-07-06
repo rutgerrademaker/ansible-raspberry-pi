@@ -38,13 +38,13 @@
         replace: '{{ item.replace }}'
       loop:
         - src: "{{ app_dir }}/.env"
-          regexp: ___IMMICH_DB_USERNAME___
+          regexp: "___IMMICH_DB_USERNAME___"
           replace: "{{ immich_db_username }}"
         - src: "{{ app_dir }}/.env"
-          regexp: ___IMMICH_DB_PASSWORD___
+          regexp: "___IMMICH_DB_PASSWWORD___"
           replace: "{{ immich_db_password }}"
         - src: "{{ app_dir }}/compose.yml"
-          regexp: ___APP_NAME___
+          regexp: "___APP_NAME___"
           replace: "{{ app_name }}"
 
     - name: "Install service for {{ app_name }}"

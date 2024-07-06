@@ -15,7 +15,7 @@
         group: "{{ system_group }}"
         mode: "0755"
       loop:
-        - /data/minecraft-server
+        - "{{ app_dir }}"
 
     - name: Minecraft Server install compose file
       ansible.builtin.copy:

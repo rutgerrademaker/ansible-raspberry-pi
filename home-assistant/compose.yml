@@ -12,8 +12,8 @@ services:
     labels:
       - "traefik.backend=home-assistant"
       - "traefik.docker.network=webproxy"
-      - "traefik.http.routers.home-assistant.rule=Host(`hass.local`)"
-      - "traefik.frontend.rule=Host:hass.local"
+      - "traefik.http.routers.home-assistant.rule=Host(`hass.home`)"
+      - "traefik.frontend.rule=Host:hass.home"
       - "traefik.http.routers.home-assistant.entrypoints=web"
       - "traefik.enable=true"
       - "traefik.port=8123"

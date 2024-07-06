@@ -1,17 +1,25 @@
-10.0.0.53 hass.local
-10.0.0.53 frigate.local
-10.0.0.53 immich.local
-10.0.0.53 mosquitto.local
-10.0.0.53 unifi.local
-10.0.0.53 gpodder.local
+10.0.0.53 hass.home
+10.0.0.53 frigate.home
+10.0.0.53 immich.home
+10.0.0.53 mosquitto.home
+10.0.0.53 unifi.home
+10.0.0.53 gpodder.home
 
-10.0.0.50 pihole1.local
-10.0.0.52 pihole2.local
-10.0.0.53 pihole3.local
+10.0.0.50 pihole.pi1.home
+10.0.0.52 pihole.pi4.home
+10.0.0.53 pihole.pi5.home
 
-10.0.0.50 traefik1.local
-10.0.0.52 traefik2.local
-10.0.0.53 traefik3.local
+10.0.0.50 traefik.pi1.home
+10.0.0.52 traefik.pi4.home
+10.0.0.53 traefik.pi5.home
 
-10.0.0.40 nas.local
-10.0.0.42 opendtu.local
+10.0.0.50 adminer.pi1.home
+10.0.0.52 adminer.pi4.home
+10.0.0.53 adminer.pi5.home
+
+10.0.0.50 portainer.pi1.home
+10.0.0.52 portainer.pi4.home
+10.0.0.53 portainer.pi5.home
+
+10.0.0.40 nas.home
+10.0.0.42 opendtu.home

@@ -20,6 +20,14 @@
         update_cache: true
         cache_valid_time: 86400 # One day
 
+    - name: Install required system packages
+      ansible.builtin.apt:
+        pkg:
+          - python3-docker
+        state: present
+        update_cache: true
+        cache_valid_time: 86400 # One day
+
     - name: Create "docker" group
       ansible.builtin.group:
         name: "docker"

@@ -34,7 +34,7 @@
         owner: root
         group: root
 
-    - name: "Substitute secrets for {{ app_name }}"
+    - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
         path: "{{ item.path }}"
         regexp: "{{ item.regexp }}"
@@ -49,6 +49,12 @@
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___SERVER_NUMBER___"
           replace: "{{ server_number }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___HOSTNAME___"
+          replace: '{{ ansible_hostname }}'
 
     - name: Enable traefik service
       ansible.builtin.service:

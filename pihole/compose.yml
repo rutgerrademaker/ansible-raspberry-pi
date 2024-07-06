@@ -16,10 +16,10 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole___SERVER_NUMBER___.local`)"
+      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.___HOSTNAME___.home`)"
+      - "traefik.frontend.rule=Host:___APP_NAME___.___HOSTNAME___.home"
       - "traefik.http.routers.pihole.entrypoints=web"
       - "traefik.backend=pihole" 
-      - "traefik.frontend.rule=Host:___SERVER_NUMBER___.local"
       - "traefik.port=80"
       - "traefik.default.protocol=http"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"

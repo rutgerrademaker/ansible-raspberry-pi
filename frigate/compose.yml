@@ -23,10 +23,10 @@ services:
     labels:
       - "traefik.docker.network=webproxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.frigate.rule=Host(`frigate.local`)"
+      - "traefik.http.routers.frigate.rule=Host(`frigate.home`)"
       - "traefik.http.routers.frigate.entrypoints=web"
       - "traefik.backend=frigate" 
-      - "traefik.frontend.rule=Host:frigate.local"
+      - "traefik.frontend.rule=Host:frigate.home"
       - "traefik.port=5000"
       - "traefik.default.protocol=http"
       - "traefik.http.services.frigate.loadbalancer.server.port=5000"
