@@ -1,0 +1,61 @@
+- name: Install Portainer
+  hosts: pihole
+  become: true
+  vars:
+    app_name: "portainer"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+
+  tasks:
+    - name: "Create directories  {{ app_name }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+      loop:
+        - "{{ app_dir }}"
+
+    - name: "Install files for {{ app_name }}"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      loop:
+        - src: "compose.yml"
+          dest: "{{ app_dir }}/compose.yml"
+
+    - name: "Substitute secrets and variables for {{ app_name }}"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___HOSTNAME___"
+          replace: '{{ ansible_hostname }}'
+
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ app_name }}.service"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Enable service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        enabled: true
+
+    - name: "Start service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        state: restarted
