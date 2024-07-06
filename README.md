@@ -104,7 +104,7 @@ Simplify Container Management Across Kubernetes and Docker
 
 Self-Hosted a UniFi Network Server.
 
-- Web interface: http://unifi.home:8443/
+- Web interface: https://unifi.home:8443/
 - Docs https://github.com/linuxserver/docker-unifi-network-application
 
 ### Traefik
