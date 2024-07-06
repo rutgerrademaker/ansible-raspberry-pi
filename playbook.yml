@@ -1,5 +1,4 @@
----
-- name: Install Docker
+- name: Install system basics.
   hosts: pi5
   become: true
   tasks:

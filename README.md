@@ -231,6 +231,7 @@ If you trust yourself saving these in plain text on your local machine you can a
 - immich .env file van not have $ in value, even if between " quotes
 - Gpodder does not yet work as expected (using it as a sync server does not yet work)
 - Portainer and Adminer might be to powerful to expose directly, maybe add exta/basic auth (via Traefik?)
+- Parsing variables and secrets on the target each time is quite slow, and prone to error if a process is killed half way.
 
 ## Wishlist / TODO
 
@@ -242,5 +243,8 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Automate creating DNS records in OpenWRT.
 - Provison Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
+- Dynamically generate DNS records based on configured hosts
 - Allow unifi to adopt devices via traefik on http://unifi.home:8808 instead of IP address.
 - Add Nextcloud?
+- Add Jellyfin? (https://jellyfin.org/)
+- Add Bitwarden? (https://hub.docker.com/r/bitwarden/server)

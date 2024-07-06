@@ -54,7 +54,7 @@
           replace: "{{ app_name }}"
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___HOSTNAME___"
-          replace: '{{ ansible_hostname }}'
+          replace: '{{ inventory_hostname }}'
 
     - name: Enable traefik service
       ansible.builtin.service:

@@ -38,4 +38,4 @@ networks:
   public:
     name: "webproxy"
   local:
-    name: traefik 
+    name: traefik

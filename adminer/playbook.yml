@@ -40,7 +40,7 @@
           replace: '{{ app_name }}'
         - path: "{{ app_dir }}/compose.yml"
           regexp: '___HOSTNAME___'
-          replace: '{{ ansible_hostname }}'
+          replace: '{{ inventory_hostname }}'
 
     # - name: Tear down existing services
     #   community.docker.docker_compose:
