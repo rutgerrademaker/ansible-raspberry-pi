@@ -1,4 +1,5 @@
-- name: Install system basics.
+---
+- name: Install system basics
   hosts: pi5
   become: true
   tasks:
@@ -99,3 +100,4 @@
 
 - name: Portainer
   ansible.builtin.import_playbook: portainer/playbook.yml
+...

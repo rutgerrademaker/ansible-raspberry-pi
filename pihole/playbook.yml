@@ -46,7 +46,7 @@
           replace: "{{ app_name }}"
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___HOSTNAME___"
-          replace: '{{ ansible_hostname }}'
+          replace: '{{ inventory_hostname }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:

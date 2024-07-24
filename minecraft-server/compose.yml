@@ -1,5 +1,6 @@
 services:
   minecraft-server:
+    container_name: "minecraft-server"
     image: itzg/minecraft-bedrock-server
     tty: true
     stdin_open: true

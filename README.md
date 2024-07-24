@@ -248,3 +248,8 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Add Nextcloud?
 - Add Jellyfin? (https://jellyfin.org/)
 - Add Bitwarden? (https://hub.docker.com/r/bitwarden/server)
+- Grafana
+- Elk stack for logs
+- Uptime kuma
+- Start minecraft server if someone tries to connect (or visits some website with a button to start it)
+- Stop minecraft server at if no users are connected for x time.
