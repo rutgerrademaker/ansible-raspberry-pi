@@ -242,7 +242,6 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
 - Quotes are not (yet) used consistent.
-- Unifi users can nog log in via unifi.home
 - immich .env file van not have $ in value, even if between " quotes
 - Gpodder does not yet work as expected (using it as a sync server does not yet work)
 - Portainer and Adminer might be to powerful to expose directly, maybe add exta/basic auth (via Traefik?)
@@ -267,3 +266,4 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Uptime kuma
 - Start minecraft server if someone tries to connect (or visits some website with a button to start it)
 - Stop minecraft server at if no users are connected for x time.
+- Stop modifying docker compose (and other config) files on the target server by preparing them locally.
