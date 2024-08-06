@@ -6,71 +6,80 @@
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
+    docker_port_http: "80"
+    host: "{{ app_name }}.{{ inventory_hostname }}.home"
 
   tasks:
-    - name: "Create directories  {{ app_name }}"
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
-        mode: "0755"
-      loop:
-        - "{{ app_dir }}"
-        - "{{ app_dir }}/etc-pihole"
-
-    - name: "Install files for {{ app_name }}"
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
-        mode: "0644"
-      loop:
-        - src: "compose.yml"
-          dest: "{{ app_dir }}/compose.yml"
-        - src: "etc-pihole/custom.list"
-          dest: "{{ app_dir }}/etc-pihole/custom.list"
-
-    - name: "Substitute secrets and variables for {{ app_name }}"
-      ansible.builtin.replace:
-        path: "{{ item.path }}"
-        regexp: "{{ item.regexp }}"
-        replace: '{{ item.replace }}'
-      loop:
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___WEBPASSWORD___"
-          replace: "{{ pihole_webpassword }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___APP_NAME___"
-          replace: "{{ app_name }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___HOSTNAME___"
-          replace: '{{ inventory_hostname }}'
-
-    - name: "Install service for {{ app_name }}"
-      ansible.builtin.copy:
-        src: "etc/systemd/system/{{ app_name }}.service"
-        dest: "/etc/systemd/system/{{ app_name }}.service"
-        mode: "0644"
-        owner: root
-        group: root
-
-    - name: Allow local usage of DNS
+    - name: "Add local dns record"
+      delegate_to: localhost
       ansible.builtin.lineinfile:
-        line: "static domain_name_servers={{ ansible_ssh_host }}"
+        dest: ../miscelaneous/local_dns_records.list
+        line: '{{ ansible_host }} {{ host }}'
         state: present
-        create: true
-        path: /etc/dhcpcd.conf
-        mode: "0644"
-        owner: root
 
-    - name: "Enable service {{ app_name }}"
-      ansible.builtin.service:
-        name: "{{ app_name }}"
-        enabled: true
+    # - name: "Create directories  {{ app_name }}"
+    #   ansible.builtin.file:
+    #     path: "{{ item }}"
+    #     state: directory
+    #     owner: "{{ app_user }}"
+    #     group: "{{ app_group }}"
+    #     mode: "0755"
+    #   loop:
+    #     - "{{ app_dir }}"
+    #     - "{{ app_dir }}/etc-pihole"
 
-    - name: "Start service {{ app_name }}"
-      ansible.builtin.service:
-        name: "{{ app_name }}"
-        state: restarted
+    # - name: "Install files for {{ app_name }}"
+    #   ansible.builtin.copy:
+    #     src: "{{ item.src }}"
+    #     dest: "{{ item.dest }}"
+    #     owner: "{{ app_user }}"
+    #     group: "{{ app_group }}"
+    #     mode: "0644"
+    #   loop:
+    #     - src: "compose.yml"
+    #       dest: "{{ app_dir }}/compose.yml"
+    #     - src: "../miscelaneous/local_dns_records.list"
+    #       dest: "{{ app_dir }}/etc-pihole/custom.list"
+
+    # - name: "Substitute secrets and variables for {{ app_name }}"
+    #   ansible.builtin.replace:
+    #     path: "{{ item.path }}"
+    #     regexp: "{{ item.regexp }}"
+    #     replace: '{{ item.replace }}'
+    #   loop:
+    #     - path: "{{ app_dir }}/compose.yml"
+    #       regexp: "___WEBPASSWORD___"
+    #       replace: "{{ pihole_webpassword }}"
+    #     - path: "{{ app_dir }}/compose.yml"
+    #       regexp: "___APP_NAME___"
+    #       replace: "{{ app_name }}"
+    #     - path: "{{ app_dir }}/compose.yml"
+    #       regexp: "___HOSTNAME___"
+    #       replace: '{{ inventory_hostname }}'
+
+    # - name: "Install service for {{ app_name }}"
+    #   ansible.builtin.copy:
+    #     src: "etc/systemd/system/{{ app_name }}.service"
+    #     dest: "/etc/systemd/system/{{ app_name }}.service"
+    #     mode: "0644"
+    #     owner: root
+    #     group: root
+
+    # - name: Allow local usage of DNS
+    #   ansible.builtin.lineinfile:
+    #     line: "static domain_name_servers={{ ansible_ssh_host }}"
+    #     state: present
+    #     create: true
+    #     path: /etc/dhcpcd.conf
+    #     mode: "0644"
+    #     owner: root
+
+    # - name: "Enable service {{ app_name }}"
+    #   ansible.builtin.service:
+    #     name: "{{ app_name }}"
+    #     enabled: true
+
+    # - name: "Start service {{ app_name }}"
+    #   ansible.builtin.service:
+    #     name: "{{ app_name }}"
+    #     state: restarted

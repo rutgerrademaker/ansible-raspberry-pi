@@ -1,0 +1,33 @@
+services:
+  ___APP_NAME___:
+    user: "${UID}"
+    container_name: "___APP_NAME___"
+    image: grafana/grafana
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      - "traefik.backend=___APP_NAME___"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.home`)"
+      - "traefik.frontend.rule=Host:___APP_NAME___.___HOSTNAME___.home"
+      - "traefik.http.routers.___APP_NAME___.entrypoints=web"
+      - "traefik.enable=true"
+      - "traefik.port=___DOCKER_PORT_HTTP___"
+      - "traefik.default.protocol=http"
+      - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=3000"
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+     name: "___APP_NAME___"
+
+  public:
+    external: true
+    name: "webproxy"
+
+volumes:
+  grafana-storage: {}    

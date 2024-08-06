@@ -11,7 +11,7 @@
         mode: "0755"
       loop:
         - /data/unifi-network-application
-        - /data/mongo-db
+        - /data/unifi-network-application/mongo-db
 
     - name: Unifi Network Application install compose file
       ansible.builtin.copy:
@@ -22,7 +22,7 @@
     - name: Init Mong DB user
       ansible.builtin.copy:
         src: init-mongo.js
-        dest: /data/mongo-db/init-mongo.js
+        dest: /data/unifi-network-application/mongo-db/init-mongo.js
         mode: "0600"
 
     - name: Unifi Network Application install service

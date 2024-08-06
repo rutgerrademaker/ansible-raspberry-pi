@@ -1,0 +1,15 @@
+[Unit]
+Description=Grafana (docker compose)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/grafana
+ExecStart=/usr/bin/docker compose -f /data/grafana/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/grafana/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

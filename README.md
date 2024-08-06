@@ -10,6 +10,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
   - [Features](#features)
     - [Adminer](#adminer)
     - [Frigate NVR](#frigate-nvr)
+    - [Grafana](#grafana)
     - [Gpodder](#gpodder)
     - [Home Assistant](#home-assistant)
     - [Immich](#immich)
@@ -17,8 +18,8 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Mosquitto](#mosquitto)
     - [Pi Hole](#pi-hole)
     - [Portainer CE](#portainer-ce)
-    - [Unifi Network Application](#unifi-network-application)
     - [Traefik](#traefik)
+    - [Unifi Network Application](#unifi-network-application)
   - [Miscellaneous](#miscellaneous)
     - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
     - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
@@ -48,9 +49,23 @@ Monitor your security cameras with locally processed AI.
 - Web interface: http://frigate.home/
 - Docs: https://docs.frigate.video/
 
+### Grafana
+
+Media aggregator and podcast client/
+
+- Web interface: http://grfana.home/
+- Docs:
+  - https://grafana.com/
+  - https://hub.docker.com/r/grafana/grafana
+
 ### Gpodder
 
-Media aggregator and podcast client
+Media aggregator and podcast client/
+
+- Web interface: http://gpodder.home/
+- Docs:
+  - https://gpodder.github.io/
+  - https://github.com/xthursdayx/gpodder-docker
 
 ### Home Assistant
 
@@ -96,10 +111,19 @@ Urls are based on the configured `server_number` in the ansible inventory.
 
 Simplify Container Management Across Kubernetes and Docker
 
-- Web interface: 
+- Web interface:
   - http://portainer.pi4.home/
   - http://portainer.pi5.home/
 - Docs: https://www.portainer.io/
+
+### Traefik
+
+Reverse proxy and ingress controller.
+
+- Web interface:
+  - http://traefik.pi4.home/
+  - http://traefik.pi5.home/
+- Docs: https://traefik.io/
 
 ### Unifi Network Application
 
@@ -107,15 +131,6 @@ Self-Hosted a UniFi Network Server.
 
 - Web interface: https://unifi.home:8443/
 - Docs https://github.com/linuxserver/docker-unifi-network-application
-
-### Traefik
-
-Reverse proxy and ingress controller.
-
-- Web interface: 
-  - http://traefik.pi4.home/
-  - http://traefik.pi5.home/
-- Docs: https://traefik.io/
 
 ## Miscellaneous
 
@@ -239,16 +254,15 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Install my custom Unifi configuration (or latest backup).
 - Install letsencrypt SSL certificate(s).
 - Scheduled backup for data directory to other server.
-- Enable / configure firewall.
-- Automate creating DNS records in OpenWRT.
-- Provison Home Assistant configuration files for solar / mqtt / modbus etc.
+- Enable / configure ufw firewall.
+- Finalize Automate creating DNS records in OpenWRT.
+- Provision Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
 - Dynamically generate DNS records based on configured hosts
-- Allow unifi to adopt devices via traefik on http://unifi.home:8808 instead of IP address.
+- Allow unifi to adopt devices via traefik on http://unifi.home:8080 instead of IP address.
 - Add Nextcloud?
 - Add Jellyfin? (https://jellyfin.org/)
 - Add Bitwarden? (https://hub.docker.com/r/bitwarden/server)
-- Grafana
 - Elk stack for logs
 - Uptime kuma
 - Start minecraft server if someone tries to connect (or visits some website with a button to start it)

@@ -1,3 +1,4 @@
 .secrets
 __pycache__
 home-assistant/config
+miscelaneous/local_dns_records.list
