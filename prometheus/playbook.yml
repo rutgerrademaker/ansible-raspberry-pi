@@ -1,12 +1,12 @@
-- name: Install Grafana
+- name: Install Prometheus
   hosts: pi5
   become: true
   vars:
-    app_name: "grafana"
+    app_name: "prometheus"
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
-    docker_port_http: "3000"
+    docker_port_http: "9090"
     host: "{{ app_name }}.home"
 
   tasks:
@@ -14,20 +14,12 @@
       ansible.builtin.getent:
         database: passwd
         key: "{{ app_user }}"
-    - ansible.builtin.set_fact:
+    - name: "Set user info as facts"
+      ansible.builtin.set_fact:
         uid: "{{ ansible_facts.getent_passwd[app_user][1] }}"
         gid: "{{ ansible_facts.getent_passwd[app_user][2] }}"
 
     - name: "Create directories {{ app_name }}"
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
-        mode: "0755"
-      loop:
-        - "{{ app_dir }}"
-    - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -47,6 +39,8 @@
       loop:
         - src: "compose.yml"
           dest: "{{ app_dir }}/compose.yml"
+        - src: "prometheus.yml"
+          dest: "{{ app_dir }}/prometheus.yml"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
@@ -56,24 +50,51 @@
       loop:
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___USER___"
-          replace: "{{ uid }}:{{ gid }}"      
+          replace: "{{ uid }}:{{ gid }}"
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___APP_NAME___"
           replace: "{{ app_name }}"
         - path: "{{ app_dir }}/compose.yml"
-          regexp: "___HOSTNAME___"
-          replace: '{{ inventory_hostname }}'
-        - path: "{{ app_dir }}/compose.yml"
           regexp: "___DOCKER_PORT_HTTP___"
           replace: '{{ docker_port_http }}'
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___HOST___"
+          replace: '{{ host }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:
-        src: "etc/systemd/system/{{ app_name }}.service"
+        src: "../miscelaneous/etc/systemd/system/compose.service.template"
+        dest: "/etc/systemd/system/{{ app_name }}.service.tmp"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Substitute variables for service {{ app_name }}"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+          regexp: "___APP_DIR___"
+          replace: '{{ app_dir }}'
+
+    - name: "Create / update service file"
+      ansible.builtin.copy:
+        remote_src: true
+        src: "/etc/systemd/system/{{ app_name }}.service.tmp"
         dest: "/etc/systemd/system/{{ app_name }}.service"
         mode: "0644"
         owner: root
         group: root
+
+    - name: Remove temporary service file
+      ansible.builtin.file:
+        path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+        state: absent
 
     - name: "Enable service {{ app_name }}"
       ansible.builtin.service:

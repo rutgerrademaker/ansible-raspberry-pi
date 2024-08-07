@@ -1,6 +1,6 @@
 # Ansible script to provision a raspberry Pi
 
-This is my first ansible project, it was created in order to learn a bit of ansible while configuring my new raspberi pi 5.
+This is my first ansible project, it was created in order to learn a bit of ansible while configuring my new raspberry pi 5.
 While not tested, most likely this will work just as wel on older models. All services run in Docker (compose).
 This project is mostly a big note to my future self, in case my raspberry pi would die on me.
 
@@ -18,6 +18,8 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Mosquitto](#mosquitto)
     - [Pi Hole](#pi-hole)
     - [Portainer CE](#portainer-ce)
+    - [Prometheus](#prometheus)
+      - [Node Exporter](#node-exporter)
     - [Traefik](#traefik)
     - [Unifi Network Application](#unifi-network-application)
   - [Miscellaneous](#miscellaneous)
@@ -28,16 +30,16 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Inventory](#inventory)
     - [Secrets](#secrets)
   - [Usage](#usage)
-  - [Known issues](#known-issues)
   - [Wishlist / TODO](#wishlist--todo)
+  - [Known issues](#known-issues)
 
 ### Adminer
 
 Database management in a single PHP file (but then in docker).
 
 - Web interface:
-  - http://adminer.pi4.home/
-  - http://adminer.pi5.home/
+  - <http://adminer.pi4.home/>
+  - <http://adminer.pi5.home/>
 
 For now this only has access to the `immich` network.
 It can be started from the `/data/adminer` directory with the `docker compose up -d` command.
@@ -46,91 +48,103 @@ It can be started from the `/data/adminer` directory with the `docker compose up
 
 Monitor your security cameras with locally processed AI.
 
-- Web interface: http://frigate.home/
-- Docs: https://docs.frigate.video/
+- Web interface: <http://frigate.home/>
+- Docs: <https://docs.frigate.video/>
 
 ### Grafana
 
 Media aggregator and podcast client/
 
-- Web interface: http://grfana.home/
+- Web interface: <http://grfana.home/>
 - Docs:
-  - https://grafana.com/
-  - https://hub.docker.com/r/grafana/grafana
+  - <https://grafana.com/>
+  - <https://hub.docker.com/r/grafana/grafana>
 
 ### Gpodder
 
 Media aggregator and podcast client/
 
-- Web interface: http://gpodder.home/
+- Web interface: <http://gpodder.home/>
 - Docs:
-  - https://gpodder.github.io/
-  - https://github.com/xthursdayx/gpodder-docker
+  - <https://gpodder.github.io/>
+  - <https://github.com/xthursdayx/gpodder-docker>
 
 ### Home Assistant
 
 Open source home automation that puts local control and privacy first.
 
-- Web interface: http://hass.home/
-- Docs: https://www.home-assistant.io/
-- Docs: https://www.home-assistant.io/installation/raspberrypi/#docker-compose
+- Web interface: <http://hass.home/>
+- Docs: <https://www.home-assistant.io/>
+- Docs: <https://www.home-assistant.io/installation/raspberrypi/#docker-compose>
 - Starts on (re)boot
 
 ### Immich
 
 Self-hosted photo and video management solution.
 
-- Web interface: http://immich.home/
-- Docs: https://immich.app/
+- Web interface: <http://immich.home/>
+- Docs: <https://immich.app/>
 
 ### Minecraft server
 
-- See https://github.com/itzg/docker-minecraft-bedrock-server
+- See <https://github.com/itzg/docker-minecraft-bedrock-server>
 
 ### Mosquitto
 
 An open source MQTT broker.
 
-- See https://mosquitto.org/
+- See <https://mosquitto.org/>
 - Used for IOT devices, used by to Home Assistant
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
 ### Pi Hole
 
-Network-wide Ad Blocking. 
+Network-wide Ad Blocking.
 Urls are based on the configured `server_number` in the ansible inventory.
 
 - Web interface:
-  - http://pihole.pi5.home/admin/
-  - http://pihole.pi4.home/admin/
-- Docs: https://pi-hole.net/
-- Docs: https://github.com/pi-hole/docker-pi-hole
+  - <http://pihole.pi5.home/admin/>
+  - <http://pihole.pi4.home/admin/>
+- Docs: <https://pi-hole.net/>
+- Docs: <https://github.com/pi-hole/docker-pi-hole>
 
 ### Portainer CE
 
 Simplify Container Management Across Kubernetes and Docker
 
 - Web interface:
-  - http://portainer.pi4.home/
-  - http://portainer.pi5.home/
-- Docs: https://www.portainer.io/
+  - <http://portainer.pi4.home/>
+  - <http://portainer.pi5.home/>
+- Docs: <https://www.portainer.io/>
+
+### Prometheus
+
+Monitoring system & time series database.
+
+- Web interface:
+  - <http://prometheus.home/>
+- Docs: <https://hub.docker.com/u/prom>
+
+#### Node Exporter
+
+- Docs: <https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/>
 
 ### Traefik
 
 Reverse proxy and ingress controller.
 
 - Web interface:
-  - http://traefik.pi4.home/
-  - http://traefik.pi5.home/
-- Docs: https://traefik.io/
+  - <http://traefik.pi4.home/>
+  - <http://traefik.pi5.home/>
+- Docs: <https://traefik.io/>
 
 ### Unifi Network Application
 
 Self-Hosted a UniFi Network Server.
 
-- Web interface: https://unifi.home:8443/
-- Docs https://github.com/linuxserver/docker-unifi-network-application
+- Web interface: <https://unifi.home:8443/>
+- Docs <https://github.com/linuxserver/docker-unifi-network-application>
 
 ## Miscellaneous
 
@@ -138,7 +152,7 @@ Self-Hosted a UniFi Network Server.
 
 Used for object detection in Frigate.
 
-- https://coral.ai/docs/accelerator/get-started/#runtime-on-linux
+- <https://coral.ai/docs/accelerator/get-started/#runtime-on-linux>
 
 ### Home Assistant + Mosquitto migration script
 
@@ -153,7 +167,7 @@ As it was created after the whole playbook, I did not add this step to  playbook
 This script assumes:
 
 - Ubuntu 24.04 is already installed on your Pi
-- Next to root, you have an addtional user/group (and password) we can configure a `system_user` and `system_group` 
+- Next to root, you have an additional user/group (and password) we can configure a `system_user` and `system_group`
 which can become `root`.
 - You have SSH access to your Pi
 - (local) DNS entries are created for the traefik domains
@@ -211,7 +225,7 @@ ansible-vault create ./.secrets/vault.yml
 ansible-vault edit ./.secrets/vault.yml
 ```
 
-More info: https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html
+More info: <https://docs.ansible.com/ansible/latest/vault_guide/vault_managing_passwords.html>
 
 ## Usage
 
@@ -234,19 +248,6 @@ If you trust yourself saving these in plain text on your local machine you can a
     playbook.yml
 ```
 
-## Known issues
-
-- Different services should probably use different users.
-- MongoDB for Unifi should have secret password.
-- I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
-- Have not tested the full playbook "from scratch".
-- Using `latest` versions of docker images is never recommended, I should know better.
-- Quotes are not (yet) used consistent.
-- immich .env file van not have $ in value, even if between " quotes
-- Gpodder does not yet work as expected (using it as a sync server does not yet work)
-- Portainer and Adminer might be to powerful to expose directly, maybe add exta/basic auth (via Traefik?)
-- Parsing variables and secrets on the target each time is quite slow, and prone to error if a process is killed half way.
-
 ## Wishlist / TODO
 
 - Install my custom Pi Hole blocklist (or latest backup).
@@ -257,13 +258,28 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Finalize Automate creating DNS records in OpenWRT.
 - Provision Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
-- Dynamically generate DNS records based on configured hosts
-- Allow unifi to adopt devices via traefik on http://unifi.home:8080 instead of IP address.
+- [WIP] Dynamically generate DNS records based on configured hosts
+- Allow unifi to adopt devices via traefik on <http://unifi.home:8080> instead of IP address.
 - Add Nextcloud?
-- Add Jellyfin? (https://jellyfin.org/)
-- Add Bitwarden? (https://hub.docker.com/r/bitwarden/server)
-- Elk stack for logs
-- Uptime kuma
-- Start minecraft server if someone tries to connect (or visits some website with a button to start it)
+- Add Jellyfin? (<https://jellyfin.org/>)
+- Add Bitwarden? (<https://hub.docker.com/r/bitwarden/server>)
+- Elk stack for logs (or prometheus?)
+- Uptime kuma?
+- Start minecraft server if someone tries to connect (or visits some website with a button to start it).
 - Stop minecraft server at if no users are connected for x time.
-- Stop modifying docker compose (and other config) files on the target server by preparing them locally.
+- [WIP] Stop modifying docker compose (and other config) files on the target server by preparing them locally.
+- Prometheus authentication.
+- Install Prometheus node exporter on all hosts?
+
+## Known issues
+
+- Different services should probably use different users.
+- MongoDB for Unifi should have secret password.
+- I once ran into an issue when PiHole was not started some domains could not be resolved (which was fixed by manually starting pihole).
+- Have not tested the full playbook "from scratch".
+- Using `latest` versions of docker images is never recommended, I should know better.
+- Quotes are not (yet) used consistent.
+- immich .env file van not have $ in value, even if between " quotes
+- Gpodder does not yet work as expected (using it as a sync server does not yet work)
+- Portainer and Adminer might be to powerful to expose directly, maybe add extra/basic auth (via Traefik?)
+- Parsing variables and secrets on the target each time is quite slow, and prone to error if a process is killed half way.
