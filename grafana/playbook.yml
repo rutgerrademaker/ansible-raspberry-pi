@@ -14,7 +14,8 @@
       ansible.builtin.getent:
         database: passwd
         key: "{{ app_user }}"
-    - ansible.builtin.set_fact:
+    - name: "Set uid and guid as facts"
+      ansible.builtin.set_fact:
         uid: "{{ ansible_facts.getent_passwd[app_user][1] }}"
         gid: "{{ ansible_facts.getent_passwd[app_user][2] }}"
 
@@ -27,6 +28,7 @@
         mode: "0755"
       loop:
         - "{{ app_dir }}"
+
     - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
@@ -40,13 +42,13 @@
     - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
         src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
+        dest: "{{ app_dir }}/"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0644"
       loop:
         - src: "compose.yml"
-          dest: "{{ app_dir }}/compose.yml"
+        - src: ".env"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
@@ -56,7 +58,7 @@
       loop:
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___USER___"
-          replace: "{{ uid }}:{{ gid }}"      
+          replace: "{{ uid }}:{{ gid }}"
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___APP_NAME___"
           replace: "{{ app_name }}"

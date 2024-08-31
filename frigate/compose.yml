@@ -14,6 +14,8 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
+    ports:
+      - "5000:5000"
     #ports:
       #- "8554:8554" # RTSP feeds
       #- "8555:8555/tcp" # WebRTC over tcp
@@ -25,7 +27,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.frigate.rule=Host(`frigate.home`)"
       - "traefik.http.routers.frigate.entrypoints=web"
-      - "traefik.backend=frigate" 
+      - "traefik.backend=frigate"
       - "traefik.frontend.rule=Host:frigate.home"
       - "traefik.port=5000"
       - "traefik.default.protocol=http"

@@ -62,10 +62,10 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
-- name: Coral
+- name: System / Coral
   ansible.builtin.import_playbook: system/coral.yml
 
-- name: Network
+- name: System / Network
   ansible.builtin.import_playbook: system/network.yml
 
 - name: Traefik
@@ -95,9 +95,18 @@
 - name: Adminer
   ansible.builtin.import_playbook: adminer/playbook.yml
 
-- name: Unifi
-  ansible.builtin.import_playbook: unifi/playbook.yml
+- name: Unifi Network Application
+  ansible.builtin.import_playbook: unifi-network-application/playbook.yml
 
 - name: Portainer
   ansible.builtin.import_playbook: portainer/playbook.yml
+
+- name: Grafana
+  ansible.builtin.import_playbook: grafana/playbook.yml
+
+- name: Prometheus
+  ansible.builtin.import_playbook: prometheus/playbook.yml
+
+- name: OpenWrt
+  ansible.builtin.import_playbook: openwrt/playbook.yml
 ...

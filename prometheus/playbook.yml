@@ -28,6 +28,7 @@
         mode: "0755"
       loop:
         - "{{ app_dir }}"
+        - "{{ app_dir }}/mqtt2prometheus"
 
     - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
@@ -41,6 +42,10 @@
           dest: "{{ app_dir }}/compose.yml"
         - src: "prometheus.yml"
           dest: "{{ app_dir }}/prometheus.yml"
+        - src: "mqtt2prometheus/config.yaml"
+          dest: "{{ app_dir }}/mqtt2prometheus/config.yaml"
+        - src: "mqtt2prometheus/.env"
+          dest: "{{ app_dir }}/mqtt2prometheus/.env"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
@@ -60,6 +65,9 @@
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___HOST___"
           replace: '{{ host }}'
+        - path: "{{ app_dir }}/prometheus.yml"
+          regexp: "__HASS_LONG_LIVED_ACCESS_TOKEN_PROMETHEUS___"
+          replace: '{{ hass_long_lived_access_token_prometheus }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:

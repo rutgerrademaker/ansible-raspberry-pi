@@ -1,0 +1,17 @@
+- name: Update pihole custom dns
+  hosts: pihole
+  become: true
+  vars:
+    app_name: "pihole"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+
+  tasks:
+    - name: "Update custom dns records on all piholes"
+      ansible.builtin.copy:
+        src: ./local_dns_records.list
+        dest: "{{ app_dir }}/etc-pihole/custom.list"
+        mode: "0644"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"

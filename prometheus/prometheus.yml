@@ -11,5 +11,24 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus-node-exporter:9100']
 
-remote_write:
-  - url: 'http://10.0.0.53:9100'
+  - job_name: "hass"
+    scrape_interval: 5s
+    metrics_path: /api/prometheus
+
+    # Long-Lived Access Token
+    authorization:
+      credentials: "__HASS_LONG_LIVED_ACCESS_TOKEN_PROMETHEUS___"
+
+    scheme: http
+    static_configs:
+      - targets: ['10.0.0.53:8123']
+
+  - job_name: 'opendtu'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['10.0.0.42:80'] 
+    metrics_path: '/api/prometheus/metrics'
+    scheme: http  # Use 'http' for HTTP or 'https' for HTTPS
+
+# remote_write:
+#   - url: 'http://prometheus.home/'

@@ -1,0 +1,37 @@
+mqtt:
+ # The MQTT broker to connect to
+  server: tcp://10.0.0.53:1883
+  user: mosquitto
+  password: mosquitto 
+  # Optional: Used to specify ClientID. The default is <hostname>-<pid>
+  client_id: mosquitto.home
+  # The Topic path to subscribe to. Be aware that you have to specify the wildcard, if you want to follow topics for multiple sensors.
+  topic_path: shellypro3em/status/+
+  # Optional: Regular expression to extract the device ID from the topic path. The default regular expression, assumes
+  # that the last "element" of the topic_path is the device id.
+  # The regular expression must contain a named capture group with the name deviceid
+  # For example the expression for tasamota based sensors is "tele/(?P<deviceid>.*)/.*"
+  device_id_regex: "(.*/)?(?P<deviceid>.*)"
+  # The MQTT QoS level
+  qos: 0
+
+cache:
+  # Timeout. Each received metric will be presented for this time if no update is send via MQTT.
+  # Set the timeout to -1 to disable the deletion of metrics from the cache. The exporter presents the ingest timestamp
+  # to prometheus.
+  timeout: 24h
+  # Path to the directory to keep the state for monotonic metrics.
+  state_directory: "/var/lib/mqtt2prometheus"
+
+metrics:
+  - prom_name: power
+    mqtt_name: power
+    type: gauge
+    const_labels:
+      sensor_type: shelly
+
+  - prom_name: voltage
+    mqtt_name: voltage
+    type: gauge
+    const_labels:
+      sensor_type: shelly

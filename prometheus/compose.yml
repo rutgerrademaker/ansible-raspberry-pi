@@ -11,7 +11,7 @@ services:
   prometheus-node-exporter:
     user: "___USER___"
     image: prom/node-exporter:latest
-    container_name: prometheus-node-exporter
+    container_name: ___APP_NAME___-node-exporter
     restart: unless-stopped
     volumes:
       - /proc:/host/proc:ro
@@ -26,11 +26,23 @@ services:
       - 9100
     networks:
       - local
+  
+  mqtt2prometheus:
+    user: "___USER___"
+    image: ghcr.io/hikhvar/mqtt2prometheus:latest
+    container_name: mqtt2prometheus
+    restart: unless-stopped
+    env_file:
+      - /data/prometheus/mqtt2prometheus/.env
+    volumes:
+      - /data/prometheus/mqtt2prometheus/config.yaml:/config.yaml
+    networks:  
+      - local
 
   prometheus:
-    user: "___USER___"
+    container_name: ___APP_NAME___
     image: prom/prometheus:latest
-    container_name: prometheus
+    user: "___USER___"
     restart: unless-stopped
     volumes:
       - /data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml

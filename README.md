@@ -101,7 +101,7 @@ An open source MQTT broker.
 ### Pi Hole
 
 Network-wide Ad Blocking.
-Urls are based on the configured `server_number` in the ansible inventory.
+Urls are based on the configured `inventory_hostname` in the ansible inventory.
 
 - Web interface:
   - <http://pihole.pi5.home/admin/>
