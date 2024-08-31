@@ -98,9 +98,6 @@
 - name: Unifi Network Application
   ansible.builtin.import_playbook: unifi-network-application/playbook.yml
 
-- name: Portainer
-  ansible.builtin.import_playbook: portainer/playbook.yml
-
 - name: Grafana
   ansible.builtin.import_playbook: grafana/playbook.yml
 

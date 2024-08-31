@@ -1,0 +1,11 @@
+[Unit]
+Description=MediaMTX webcam
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /data/mediamtx/webcam.sh
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

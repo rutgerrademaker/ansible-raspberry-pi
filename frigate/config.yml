@@ -10,7 +10,10 @@ mqtt:
 go2rtc:
   streams:
     webcam:
-      - rtsp://10.0.0.52:8554/webcam
+      - rtsp://10.0.0.53:8554/webcam
+    movie:
+      - rtsp://10.0.0.53:8554/movie
+
 
 cameras:
   webcam:
@@ -18,7 +21,18 @@ cameras:
       output_args:
         record: preset-record-generic-audio-copy
       inputs:
-        - path: rtsp://10.0.0.52:8554/webcam # <--- the name here must match the name of the camera in restream
+        - path: rtsp://10.0.0.53:8554/webcam # <--- the name here must match the name of the camera in restream
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+            - detect
+            - audio # <- only necessary if audio detection is enabled
+  movie:
+    ffmpeg:
+      output_args:
+        record: preset-record-generic-audio-copy
+      inputs:
+        - path: rtsp://10.0.0.53:8554/movie # <--- the name here must match the name of the camera in restream
           input_args: preset-rtsp-restream
           roles:
             - record

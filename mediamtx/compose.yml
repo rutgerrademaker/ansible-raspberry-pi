@@ -1,0 +1,22 @@
+services:
+  mediamtx:
+    container_name: mediamtx
+    restart: unless-stopped
+    image: bluenviron/mediamtx
+    ports:
+      - 8554:8554
+      #- 1935:1935
+      #- 8888:8888
+      #- 8889:8889
+      #- 8890:8890/udp
+      #- 8189:8189/udp
+    environment:
+      MTX_PROTOCOLS: tcp
+      #MTX_WEBRTCADDITIONALHOSTS: 10.0.0.53
+    networks:
+      - public
+
+networks:
+  public:
+    external: true
+    name: webproxy

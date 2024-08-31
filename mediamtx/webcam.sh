@@ -1,0 +1,1 @@
+ffmpeg -i /dev/video0 -pix_fmt yuv420p -preset ultrafast -b:v 600k -f rtsp rtsp://10.0.0.53:8554/webcam

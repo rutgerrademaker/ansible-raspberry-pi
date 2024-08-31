@@ -1,0 +1,14 @@
+[Unit]
+Description=mediamtx (docker compose)
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/data/mediamtx
+ExecStart=/usr/bin/docker compose -f /data/mediamtx/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f /data/mediamtx/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

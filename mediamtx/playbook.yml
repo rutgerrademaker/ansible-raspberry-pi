@@ -1,13 +1,11 @@
-- name: Install Grafana
+- name: Install MediaMTX
   hosts: pi5
   become: true
   vars:
-    app_name: "grafana"
+    app_name: "mediamtx"
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
-    docker_port_http: "3000"
-    host: "{{ app_name }}.home"
 
   tasks:
     - name: "Get user info"
@@ -38,7 +36,6 @@
         mode: "0644"
       loop:
         - src: "compose.yml"
-        - src: ".env"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:
@@ -52,12 +49,6 @@
         - path: "{{ app_dir }}/compose.yml"
           regexp: "___APP_NAME___"
           replace: "{{ app_name }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___HOSTNAME___"
-          replace: '{{ inventory_hostname }}'
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___DOCKER_PORT_HTTP___"
-          replace: '{{ docker_port_http }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:
@@ -77,9 +68,5 @@
         name: "{{ app_name }}"
         state: restarted
 
-    - name: "Add local dns record"
-      delegate_to: localhost
-      ansible.builtin.lineinfile:
-        dest: ../miscelaneous/local_dns_records.list
-        line: '{{ ansible_host }} {{ host }}'
-        state: present
+- name: Webcam
+  ansible.builtin.import_playbook: webcam.yml
