@@ -1,6 +1,14 @@
 - name: Install Home Assistant
   hosts: pi5
   become: true
+  vars:
+    app_name: "home-assistant"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+    docker_port_http: "8123"
+    host: "hass.home"
+
   tasks:
     - name: Create Home Assistant directories
       ansible.builtin.file:
@@ -11,13 +19,22 @@
         mode: "0755"
       loop:
         - /data/home-assistant
+        - /data/home-assistant/development
+
+    - name: Install development version of Home Assistant
+      ansible.builtin.git:
+        repo: git@github.com:rutgerrademaker/home-assistant-core.git
+        dest: /data/home-assistant/development
+        version: feature/modbus-climate-onoff-with-coil
+        key_file: /home/rutger/.ssh/id_ed25519
+        accept_hostkey: true
 
     - name: Install Home Assistant compose file
       ansible.builtin.copy:
         src: compose.yml
         dest: /data/home-assistant/compose.yml
-        owner: "{{ system_user }}"
-        group: "{{ system_group }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
         mode: "0600"
 
     - name: Substitute P1 usb id

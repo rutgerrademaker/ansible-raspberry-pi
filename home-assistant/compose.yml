@@ -3,6 +3,7 @@ services:
     container_name: home-assistant
     image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
+      - /data/home-assistant/development/homeassistant/components/modbus:/usr/src/homeassistant/homeassistant/components/modbus
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
