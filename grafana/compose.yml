@@ -38,11 +38,11 @@ services:
 
   promtail:
     image: grafana/promtail:2.9.2
-    user: "___USER___"
     container_name: "promtail"
     volumes:
-      - /var/log:/var/log
-      - /data/grafana/promtail/config.yml:/etc/promtail/config.yml
+      - /var/log:/var/log:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /data/grafana/promtail/config.yml:/etc/promtail/config.yml:ro
     command: -config.file=/etc/promtail/config.yml
     networks:
       - "local"
