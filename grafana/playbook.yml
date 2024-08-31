@@ -28,17 +28,23 @@
         mode: "0755"
       loop:
         - "{{ app_dir }}"
+        - "{{ app_dir }}/loki"
+        - "{{ app_dir }}/promtail"
+        - "{{ app_dir }}/provisioning/datasources"
 
     - name: "Install files for {{ app_name }}"
       ansible.builtin.copy:
         src: "{{ item.src }}"
-        dest: "{{ app_dir }}/"
+        dest: "{{ app_dir }}/{{ item.src }}"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0644"
       loop:
         - src: "compose.yml"
         - src: ".env"
+        - src: "provisioning/datasources/ds.yaml"
+        - src: "loki/local-config.yaml"
+        - src: "promtail/config.yml"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:

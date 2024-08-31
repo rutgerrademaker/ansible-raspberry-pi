@@ -4,6 +4,7 @@ services:
     container_name: "___APP_NAME___"
     image: grafana/grafana
     volumes:
+      - /data/grafana/provisioning:/etc/grafana/provisioning
       - /data/grafana:/var/lib/grafana
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
@@ -22,6 +23,29 @@ services:
     networks:
       - "local"
       - "public"
+
+  loki:
+    image: grafana/loki:2.9.2
+    user: "___USER___"
+    container_name: "loki"
+    volumes:
+      - /data/grafana/loki/local-config.yaml:/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - "local"
+
+  promtail:
+    image: grafana/promtail:2.9.2
+    user: "___USER___"
+    container_name: "promtail"
+    volumes:
+      - /var/log:/var/log
+      - /data/grafana/promtail/config.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - "local"
 
 networks:
   local:
