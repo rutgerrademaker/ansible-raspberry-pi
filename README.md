@@ -14,6 +14,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Gpodder](#gpodder)
     - [Home Assistant](#home-assistant)
     - [Immich](#immich)
+    - [MediaMTX](#mediamtx)
     - [Minecraft server](#minecraft-server)
     - [Mosquitto](#mosquitto)
     - [Pi Hole](#pi-hole)
@@ -84,6 +85,12 @@ Self-hosted photo and video management solution.
 
 - Web interface: <http://immich.home/>
 - Docs: <https://immich.app/>
+
+### MediaMTX
+
+MediaMTX (formerly rtsp-simple-server) is a ready-to-use and zero-dependency real-time media server and media proxy that allows to publish, read, proxy, record and playback video and audio streams. It has been conceived as a "media router" that routes media streams from one end to the other.
+
+- Docs: <https://github.com/bluenviron/mediamtx>
 
 ### Minecraft server
 

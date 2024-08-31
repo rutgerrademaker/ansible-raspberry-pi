@@ -26,7 +26,7 @@
         repo: git@github.com:rutgerrademaker/home-assistant-core.git
         dest: /data/home-assistant/development
         version: feature/modbus-climate-onoff-with-coil
-        key_file: /home/rutger/.ssh/id_ed25519
+        key_file: ~/.ssh/id_ed25519
         accept_hostkey: true
 
     - name: Install Home Assistant compose file
