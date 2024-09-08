@@ -6,10 +6,14 @@ services:
       - /data/home-assistant/development/homeassistant/components/modbus:/usr/src/homeassistant/homeassistant/components/modbus
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     devices:
       - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
       - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
+      - /dev/serial/by-id/___USB_ZIGBEE_ID___:/dev/ttyUSB2
+    cap_add:
+      - NET_ADMIN
     labels:
       - "traefik.backend=home-assistant"
       - "traefik.docker.network=webproxy"

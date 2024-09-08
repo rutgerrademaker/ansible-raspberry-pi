@@ -22,6 +22,7 @@
         - /data/home-assistant/development
 
     - name: Install development version of Home Assistant
+      become: false
       ansible.builtin.git:
         repo: git@github.com:rutgerrademaker/home-assistant-core.git
         dest: /data/home-assistant/development

@@ -1,0 +1,21 @@
+---
+# https://www.home-assistant.io/integrations/bluetooth/#requirements-for-linux-systems
+- name: Configure bluetooth
+  hosts: pi5
+  become: true
+  tasks:
+    - name: Install Bluetooth dependencies
+      ansible.builtin.apt:
+        pkg:
+          - bluez
+          - dbus-broker
+
+    - name: Enable service dbus-broker
+      ansible.builtin.service:
+        name: dbus-broker
+        enabled: true
+
+    - name: Start service dbus-broker
+      ansible.builtin.service:
+        name: dbus-broker
+        state: restarted

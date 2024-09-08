@@ -62,6 +62,9 @@
         test_command: whoami
       when: reboot_required.stat.exists
 
+- name: System / Bluetooth
+  ansible.builtin.import_playbook: system/bluetooth.yml
+
 - name: System / Coral
   ansible.builtin.import_playbook: system/coral.yml
 

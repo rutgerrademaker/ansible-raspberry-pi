@@ -2,6 +2,9 @@ services:
   ___APP_NAME___:
     user: "___USER___"
     container_name: "___APP_NAME___"
+    logging:
+      options:
+        tag: "promtail"
     image: grafana/grafana
     volumes:
       - /data/grafana/provisioning:/etc/grafana/provisioning

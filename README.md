@@ -11,6 +11,8 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [Adminer](#adminer)
     - [Frigate NVR](#frigate-nvr)
     - [Grafana](#grafana)
+      - [Loki](#loki)
+      - [Promtail](#promtail)
     - [Gpodder](#gpodder)
     - [Home Assistant](#home-assistant)
     - [Immich](#immich)
@@ -54,12 +56,24 @@ Monitor your security cameras with locally processed AI.
 
 ### Grafana
 
-Media aggregator and podcast client/
+Grafana: The open observability platform
 
 - Web interface: <http://grfana.home/>
 - Docs:
   - <https://grafana.com/>
   - <https://hub.docker.com/r/grafana/grafana>
+
+#### Loki
+
+like Prometheus, but for logs
+
+- Docs:
+  - <https://github.com/grafana/loki>
+
+#### Promtail
+
+- Docs:
+  - <https://grafana.com/docs/loki/latest/send-data/promtail/#promtail-agent>
 
 ### Gpodder
 
@@ -262,21 +276,21 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Install letsencrypt SSL certificate(s).
 - Scheduled backup for data directory to other server.
 - Enable / configure ufw firewall.
-- Finalize Automate creating DNS records in OpenWRT.
 - Provision Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
-- [WIP] Dynamically generate DNS records based on configured hosts
 - Allow unifi to adopt devices via traefik on <http://unifi.home:8080> instead of IP address.
 - Add Nextcloud?
 - Add Jellyfin? (<https://jellyfin.org/>)
 - Add Bitwarden? (<https://hub.docker.com/r/bitwarden/server>)
-- Elk stack for logs (or prometheus?)
+- Elk stack for logs (or prometheus? or grafana)
 - Uptime kuma?
 - Start minecraft server if someone tries to connect (or visits some website with a button to start it).
 - Stop minecraft server at if no users are connected for x time.
 - [WIP] Stop modifying docker compose (and other config) files on the target server by preparing them locally.
 - Prometheus authentication.
 - Install Prometheus node exporter on all hosts?
+- Explore Grafana Alloy (as promtail successor/alternative) https://grafana.com/docs/alloy/latest/
+- Logrotate
 
 ## Known issues
 
@@ -286,7 +300,7 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Have not tested the full playbook "from scratch".
 - Using `latest` versions of docker images is never recommended, I should know better.
 - Quotes are not (yet) used consistent.
-- immich .env file van not have $ in value, even if between " quotes
-- Gpodder does not yet work as expected (using it as a sync server does not yet work)
-- Portainer and Adminer might be to powerful to expose directly, maybe add extra/basic auth (via Traefik?)
+- immich `.env` file van not have $ in value, even if between " quotes.
+- Gpodder does not yet work as expected (using it as a sync server does not yet work).
+- Portainer and Adminer might be to powerful to expose directly, maybe add extra/basic auth (via Traefik?).
 - Parsing variables and secrets on the target each time is quite slow, and prone to error if a process is killed half way.
