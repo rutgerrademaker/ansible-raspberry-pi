@@ -1,0 +1,25 @@
+- name: Backup
+  hosts: pi5
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wake up the NAS
+      delegate_to: localhost
+      community.general.wakeonlan:
+        mac: '00:11:32:3B:99:E7'
+        broadcast: 10.0.0.40
+
+    - name: Wait for system to become reachable
+      ansible.builtin.wait_for_connection:
+
+    - name: Gather facts for first time
+      ansible.builtin.setup:
+
+    - name: Backup Home assistant data on nas
+      become: true
+      ansible.builtin.command: sudo rsync -azP /data/home-assistant rutger@10.0.0.40:backup/pi5/
+      changed_when: false
+      tags:
+        - skip_ansible_lint
+
+

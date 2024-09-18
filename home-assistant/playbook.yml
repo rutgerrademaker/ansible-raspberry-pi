@@ -10,6 +10,28 @@
     host: "hass.home"
 
   tasks:
+    - name: "Set"
+      ansible.builtin.set_fact:
+        yaml: "{{ lookup('ansible.builtin.file', './config/mqtt.yaml') }}"
+    - name: Creating a file with content
+      ansible.builtin.copy:
+        dest: "{{ app_dir }}/config/mqtt-test.yml"
+        content: "{{ yaml }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+    - ansible.builtin.debug:
+        msg: "{{  }} }}"
+
+    - name: "Get user info"
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ app_user }}"
+    - name: "Set uid and guid as facts"
+      ansible.builtin.set_fact:
+        uid: "{{ ansible_facts.getent_passwd[app_user][1] }}"
+        gid: "{{ ansible_facts.getent_passwd[app_user][2] }}"
+
     - name: Create Home Assistant directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -37,6 +59,25 @@
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
+
+    - name: "Substitute secrets and variables for {{ app_name }}"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___USER___"
+          replace: "{{ uid }}:{{ gid }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___HOSTNAME___"
+          replace: '{{ inventory_hostname }}'
+        - path: "{{ app_dir }}/compose.yml"
+          regexp: "___DOCKER_PORT_HTTP___"
+          replace: '{{ docker_port_http }}'
 
     - name: Substitute P1 usb id
       ansible.builtin.replace:

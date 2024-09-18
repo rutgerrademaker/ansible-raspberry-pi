@@ -1,5 +1,7 @@
 services:
   home-assistant:
+    #privileged: true
+    #user: "___USER___"
     container_name: home-assistant
     image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
@@ -7,13 +9,18 @@ services:
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
+      #- /run/udev:/run/udev:ro
+      #- /dev/bus:/dev/bus:ro
     restart: unless-stopped
     devices:
       - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
       - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
       - /dev/serial/by-id/___USB_ZIGBEE_ID___:/dev/ttyUSB2
+    device_cgroup_rules:
+      - 'c 188:* rmw'
     cap_add:
       - NET_ADMIN
+      - SYS_ADMIN
     labels:
       - "traefik.backend=home-assistant"
       - "traefik.docker.network=webproxy"

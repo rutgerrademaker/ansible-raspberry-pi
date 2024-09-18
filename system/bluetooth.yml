@@ -4,7 +4,7 @@
   hosts: pi5
   become: true
   tasks:
-    - name: Install Bluetooth dependencies
+    - name: Install Bluetooth dependencies on host
       ansible.builtin.apt:
         pkg:
           - bluez

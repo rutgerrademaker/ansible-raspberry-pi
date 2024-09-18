@@ -291,6 +291,8 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Install Prometheus node exporter on all hosts?
 - Explore Grafana Alloy (as promtail successor/alternative) https://grafana.com/docs/alloy/latest/
 - Logrotate
+- Add a bluetooth microphone
+- Add a bluetooth speaker
 
 ## Known issues
 
