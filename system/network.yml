@@ -63,7 +63,7 @@
         replace: '{{ gateway_ip }}'
 
     - name: Set default as DNS operational mode
-      community.general.ini_file:
+      general.ini_file:
         path: /etc/NetworkManager/NetworkManager.conf
         section: main
         option: dns

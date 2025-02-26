@@ -9,10 +9,14 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
       - "--providers.file.watch=true"
       # This is needed for Unifi Network Application
       - "--serversTransport.insecureSkipVerify=true"
     ports:
+      - "53:53/udp"
+      - "53:53/tcp"
       - "80:80"
       - "443:443"
     volumes:
@@ -30,6 +34,8 @@ services:
       - "traefik.port=8080"
       - "traefik.default.protocol=http"
       - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=8080"
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
     dns:
       - '___DNS_1___'
       - '___DNS_2___'

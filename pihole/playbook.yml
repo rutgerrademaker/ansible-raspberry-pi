@@ -10,12 +10,12 @@
     host: "{{ app_name }}.{{ inventory_hostname }}.home"
 
   tasks:
-    - name: "Add local dns record"
-      delegate_to: localhost
-      ansible.builtin.lineinfile:
-        dest: ../miscelaneous/local_dns_records.list
-        line: '{{ ansible_host }} {{ host }}'
-        state: present
+    # - name: "Add local dns record"
+    #   delegate_to: localhost
+    #   ansible.builtin.lineinfile:
+    #     dest: ../miscelaneous/local_dns_records.list
+    #     line: '{{ ansible_host }} {{ host }}'
+    #     state: present
 
     - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
@@ -38,8 +38,8 @@
       loop:
         - src: "compose.yml"
           dest: "{{ app_dir }}/compose.yml"
-        - src: "../miscelaneous/local_dns_records.list"
-          dest: "{{ app_dir }}/etc-pihole/custom.list"
+        # - src: "../miscelaneous/local_dns_records.list"
+        #   dest: "{{ app_dir }}/etc-pihole/custom.list"
 
     - name: "Substitute secrets and variables for {{ app_name }}"
       ansible.builtin.replace:

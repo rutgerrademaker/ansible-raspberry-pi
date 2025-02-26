@@ -1,0 +1,9 @@
+[Unit]
+Description=Listen for wake-on-lan from docker via pipe
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/wakeonlan -f /data/home-assistant/config/wolpipe
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+- name: Docker Wake On Lan
+  hosts: pi5
+  become: true
+  vars:
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+  tasks:
+    - name: Create named pipe
+      command:
+        cmd: mkfifo /data/home-assistant/config/wolpipe
+        creates: /data/home-assistant/config/wolpipe
+
+    - name: Install Docker Wake On Lan
+      ansible.builtin.copy:
+        src: etc/systemd/system/docker-wake-on-lan.service
+        dest: /etc/systemd/system/docker-wake-on-lan.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Enable service docker-wake-on-lan
+      ansible.builtin.service:
+        name: docker-wake-on-lan
+        enabled: true
+
+    - name: Start service docker-wake-on-lan
+      ansible.builtin.service:
+        name: docker-wake-on-lan
+        state: restarted
