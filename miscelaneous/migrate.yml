@@ -68,4 +68,4 @@
         state: stopped
 
 - name: Home Assistant
-  ansible.builtin.import_playbook: home-assistant.yml
+  ansible.builtin.import_playbook: ../home-assistant/playbook.yml

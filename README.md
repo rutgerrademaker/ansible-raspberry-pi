@@ -1,4 +1,4 @@
-# Ansible script to provision a raspberry Pi
+ddd# Ansible script to provision a raspberry Pi
 
 This is my first ansible project, it was created in order to learn a bit of ansible while configuring my new raspberry pi 5.
 While not tested, most likely this will work just as wel on older models. All services run in Docker (compose).
@@ -221,21 +221,29 @@ homeserver:
 Create an ansible vault file containing the following entries:
 
 ```yaml
+# Connect to the WIFI network
 network_wifi_ssid: "your_wifi_ssid"
 network_wifi_password: "your wifi password"
 
+# List of passwords for your mosquitto users
 mosquitto_mosquitto_pass: "YourSecretMosquittoPassword"
 mosquitto_homeassistant_pass: "YourSecretMosquittoHomeAssistantPassword"
 mosquitto_shelly_pass: "YourSecretMosquittoShellyPassword"
 mosquitto_opendtu_pass: "YourSecretMosquittoOpenDTUPassword"
 mosquitto_frigate_pass: "YourSecretMosquittoFrigatePassword"
 
+# Frigate password
 frigate_rtsp_password: "YourSecretFrigateRtspPassword"
 
+# Pihole admin password
 pihole_webpassword: "YourSecretPiHolePassword"
 
+# Immich iser and pass
 immich_db_username: "immich"
 immich_db_password: "YourSecretImmichDbPassword"
+
+# This token needs to be created in Home Assistant and grants access to prometheus
+hass_long_lived_access_token_prometheus: "YourHassLongLivedAccesTokenForPrometheus"
 ```
 
 ```shell

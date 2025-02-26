@@ -10,7 +10,7 @@
     # Since OpenWrt does not run Python we need to take a non-obvious approach here by scp-ing the file.
     - name: "Upload local dns records"
       delegate_to: localhost
-      ansible.builtin.command: "scp  ../miscelaneous/local_dns_records.list {{ host_user }}@{{ host_ssh_host }}:/etc/dnsmasq.hosts"
+      ansible.builtin.command: "scp -O ../miscelaneous/local_dns_records.list {{ host_user }}@{{ host_ssh_host }}:/etc/dnsmasq.hosts"
       tags:
         - skip_ansible_lint
 
