@@ -1,0 +1,48 @@
+- name: Install Music Assistant Server
+  hosts: pi5
+  become: true
+  vars:
+    app_name: "music-assistant-server"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+    docker_port_http: "8095"
+    docker_port_tcp: "8097"
+    host: "hass.home"
+
+  tasks:
+    - name: Create Home Assistant directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+      loop:
+        - /data/music-assistant-server
+
+    - name: Install Music Assistant Server compose file
+      ansible.builtin.copy:
+        src: compose.yml
+        dest: /data/music-assistant-server/compose.yml
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+
+    - name: Install Music Assistant Server service
+      ansible.builtin.copy:
+        src: etc/systemd/system/music-assistant-server.service
+        dest: /etc/systemd/system/music-assistant-server.service
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Enable service music-assistant-server
+      ansible.builtin.service:
+        name: music-assistant-server
+        enabled: true
+
+    - name: Start service music-assistant-server
+      ansible.builtin.service:
+        name: music-assistant-server
+        state: restarted
