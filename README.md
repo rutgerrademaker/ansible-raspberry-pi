@@ -19,6 +19,8 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [MediaMTX](#mediamtx)
     - [Minecraft server](#minecraft-server)
     - [Mosquitto](#mosquitto)
+    - [Music Assistant](#music-assistant)
+    - [Nextcloud](#nextcloud)
     - [Pi Hole](#pi-hole)
     - [Portainer CE](#portainer-ce)
     - [Prometheus](#prometheus)
@@ -118,6 +120,25 @@ An open source MQTT broker.
 - Used for IOT devices, used by to Home Assistant
 - Provision users for my different IOT devices
 - Starts on (re)boot
+
+### Music Assistant
+
+Music Assistant is a music library manager for your offline and online music sources which can easily stream your favourite music to a wide range of supported players and be combined with the power of Home Assistant!
+
+- Docs <https://www.music-assistant.io//>
+- Web interface: <https://mass.home/>
+
+### Nextcloud
+
+- Open source content collaboration platform
+- Web interface: <https://nextcloud.home/>
+- Docs <https://nextcloud.com/>
+
+#### Required secrets
+```
+NEXTCLOUD_DB_ROOT_PASSWORD: "NextCloudDbRootPassword"
+NEXTCLOUD_DB_PASSWORD: "NextCloudDbPassword"
+```
 
 ### Pi Hole
 
@@ -287,7 +308,6 @@ If you trust yourself saving these in plain text on your local machine you can a
 - Provision Home Assistant configuration files for solar / mqtt / modbus etc.
 - Generalize DNS configuration (maybe local and/or public?).
 - Allow unifi to adopt devices via traefik on <http://unifi.home:8080> instead of IP address.
-- Add Nextcloud?
 - Add Jellyfin? (<https://jellyfin.org/>)
 - Add Bitwarden? (<https://hub.docker.com/r/bitwarden/server>)
 - Elk stack for logs (or prometheus? or grafana)
