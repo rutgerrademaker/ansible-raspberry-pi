@@ -19,7 +19,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
     - [MediaMTX](#mediamtx)
     - [Minecraft server](#minecraft-server)
     - [Mosquitto](#mosquitto)
-    - [Music Assistant](#music-assistant)
+    - [Music Assistant Server](#music-assistant-server)
     - [Nextcloud](#nextcloud)
     - [Pi Hole](#pi-hole)
     - [Portainer CE](#portainer-ce)
@@ -121,11 +121,11 @@ An open source MQTT broker.
 - Provision users for my different IOT devices
 - Starts on (re)boot
 
-### Music Assistant
+### Music Assistant Server
 
 Music Assistant is a music library manager for your offline and online music sources which can easily stream your favourite music to a wide range of supported players and be combined with the power of Home Assistant!
 
-- Docs <https://www.music-assistant.io//>
+- Docs <https://www.music-assistant.io/>
 - Web interface: <https://mass.home/>
 
 ### Nextcloud
