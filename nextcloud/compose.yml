@@ -1,0 +1,74 @@
+#https://github.com/nextcloud/docker?tab=readme-ov-file#running-this-image-with-docker-compose
+services:
+  db:
+    container_name: nextcloud-db
+    image: mariadb:11.8
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    env_file:
+      - .env
+    networks:
+      - "local"
+
+  redis:
+    container_name: nextcloud-redis
+    image: redis:8
+    restart: always
+    networks:
+      - "local"
+
+  app:
+    container_name: nextcloud-app
+    image: nextcloud:32
+    restart: always
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # Router
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.home`)"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud-http.rule=Host(`nextcloud.home`)"
+      - "traefik.http.routers.nextcloud-http.entrypoints=web"
+      - "traefik.http.routers.nextcloud-http.middlewares=redirect-to-https"
+
+      # Service
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+
+      # Middleware
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+    name: "nextcloud"
+  public:
+    external: true
+    name: webproxy
+
+volumes:
+  nextcloud:
+  nextcloud-db:
