@@ -80,32 +80,32 @@
 - name: Home Assistant
   ansible.builtin.import_playbook: home-assistant/playbook.yml
 
-- name: Minecraft Server
-  ansible.builtin.import_playbook: minecraft-server/playbook.yml
+# - name: Minecraft Server
+#   ansible.builtin.import_playbook: minecraft-server/playbook.yml
 
 - name: Pi Hole
   ansible.builtin.import_playbook: pihole/playbook.yml
 
-- name: Frigate NVR
-  ansible.builtin.import_playbook: frigate/playbook.yml
+# - name: Frigate NVR
+#   ansible.builtin.import_playbook: frigate/playbook.yml
 
 - name: Immich
   ansible.builtin.import_playbook: immich/playbook.yml
 
-- name: Portainer
-  ansible.builtin.import_playbook: portainer/playbook.yml
+# - name: Portainer
+#   ansible.builtin.import_playbook: portainer/playbook.yml
 
-- name: Adminer
-  ansible.builtin.import_playbook: adminer/playbook.yml
+# - name: Adminer
+#   ansible.builtin.import_playbook: adminer/playbook.yml
 
 - name: Unifi Network Application
   ansible.builtin.import_playbook: unifi-network-application/playbook.yml
 
-- name: Grafana
-  ansible.builtin.import_playbook: grafana/playbook.yml
+# - name: Grafana
+#   ansible.builtin.import_playbook: grafana/playbook.yml
 
-- name: Prometheus
-  ansible.builtin.import_playbook: prometheus/playbook.yml
+# - name: Prometheus
+#   ansible.builtin.import_playbook: prometheus/playbook.yml
 
 - name: OpenWrt
   ansible.builtin.import_playbook: openwrt/playbook.yml
