@@ -49,6 +49,22 @@ Database management in a single PHP file (but then in docker).
 For now this only has access to the `immich` network.
 It can be started from the `/data/adminer` directory with the `docker compose up -d` command.
 
+### Bitwarden
+
+- Web interface:
+  - [<http://adminer.pi4.home/](http://bitwarden.home/)>
+
+#### Needed secrets
+
+# The password for accessing the Bitwarden database.
+BW_DB_PASSWORD: "YourDatabasePassword"
+
+# A valid installation ID generated from https://bitwarden.com/host/.
+BW_INSTALLATION_ID: "YourInstallationID"
+
+# A valid installation key generated from https://bitwarden.com/host/.
+BW_INSTALLATION_KEY: "YourInstallationKey"
+
 ### Frigate NVR
 
 Monitor your security cameras with locally processed AI.
@@ -227,8 +243,6 @@ homeserver:
       ansible_host: 10.0.0.53
       system_user: rutger
       system_group: rutger
-      dns_1: "1.1.1.1"
-      dns_2: "1.0.0.1"      
       eth0_ip: "10.0.0.53/24"
       wlan0_ip: "10.0.0.54/24"
       gateway_ip: "10.0.0.1"
@@ -265,6 +279,13 @@ immich_db_password: "YourSecretImmichDbPassword"
 
 # This token needs to be created in Home Assistant and grants access to prometheus
 hass_long_lived_access_token_prometheus: "YourHassLongLivedAccesTokenForPrometheus"
+
+dns_1: 1.0.0.1
+dns_2: 1.1.1.1
+
+letsencrypt_email: "test@example.com"
+local_domain: "local"
+local_domain: "example.com"
 ```
 
 ```shell

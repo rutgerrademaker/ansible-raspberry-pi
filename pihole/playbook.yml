@@ -10,12 +10,12 @@
     host: "{{ app_name }}.{{ inventory_hostname }}.home"
 
   tasks:
-    # - name: "Add local dns record"
-    #   delegate_to: localhost
-    #   ansible.builtin.lineinfile:
-    #     dest: ../miscelaneous/local_dns_records.list
-    #     line: '{{ ansible_host }} {{ host }}'
-    #     state: present
+    - name: "Add local dns record"
+      delegate_to: localhost
+      ansible.builtin.lineinfile:
+        dest: ../miscelaneous/local_dns_records.list
+        line: '{{ ansible_host }} {{ host }}'
+        state: present
 
     - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
@@ -29,33 +29,17 @@
         - "{{ app_dir }}/etc-pihole"
 
     - name: "Install files for {{ app_name }}"
-      ansible.builtin.copy:
+      ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0644"
       loop:
-        - src: "compose.yml"
+        - src: "compose.yml.j2"
           dest: "{{ app_dir }}/compose.yml"
         # - src: "../miscelaneous/local_dns_records.list"
         #   dest: "{{ app_dir }}/etc-pihole/custom.list"
-
-    - name: "Substitute secrets and variables for {{ app_name }}"
-      ansible.builtin.replace:
-        path: "{{ item.path }}"
-        regexp: "{{ item.regexp }}"
-        replace: '{{ item.replace }}'
-      loop:
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___WEBPASSWORD___"
-          replace: "{{ pihole_webpassword }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___APP_NAME___"
-          replace: "{{ app_name }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___HOSTNAME___"
-          replace: '{{ inventory_hostname }}'
 
     - name: "Install service for {{ app_name }}"
       ansible.builtin.copy:

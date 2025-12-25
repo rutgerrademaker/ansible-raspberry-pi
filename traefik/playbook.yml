@@ -19,8 +19,8 @@
         - /data/traefik
 
     - name: Install compose file
-      ansible.builtin.copy:
-        src: compose.yml
+      ansible.builtin.template:
+        src: compose.yml.j2
         dest: /data/traefik/compose.yml
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
@@ -33,25 +33,6 @@
         mode: "0644"
         owner: root
         group: root
-
-    - name: "Substitute secrets and variables for {{ app_name }}"
-      ansible.builtin.replace:
-        path: "{{ item.path }}"
-        regexp: "{{ item.regexp }}"
-        replace: '{{ item.replace }}'
-      loop:
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___DNS_1___"
-          replace: "{{ dns_1 }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___DNS_2___"
-          replace: "{{ dns_2 }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___APP_NAME___"
-          replace: "{{ app_name }}"
-        - path: "{{ app_dir }}/compose.yml"
-          regexp: "___HOSTNAME___"
-          replace: '{{ inventory_hostname }}'
 
     - name: Enable traefik service
       ansible.builtin.service:

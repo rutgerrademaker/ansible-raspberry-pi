@@ -1,0 +1,50 @@
+
+services:
+  traefik:
+    image: "traefik:v3.0"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.file.watch=true"
+      # - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      # - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      # - "--certificatesresolvers.letsencrypt.acme.email={{ letsencrypt_email }}"
+      # - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # This is needed for Unifi Network Application
+      - "--serversTransport.insecureSkipVerify=true"
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - public
+      - local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.traefik.rule=Host(`traefik1.{{ local_domain }}`) || Host(`traefik1.{{ public_domain }}`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      #- "traefik.http.routers.traefik.tls=true"
+      #- "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    dns:
+      - '{{ dns_1 }}'
+      - '{{ dns_2 }}'
+
+networks:
+  public:
+    name: "webproxy"
+  local:
+    name: traefik
