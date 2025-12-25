@@ -1,0 +1,53 @@
+services:
+  bitwarden:
+    container_name: bitwarden
+    depends_on:
+      - bitwarden-db
+    env_file:
+      - settings.env
+    image: ghcr.io/bitwarden/self-host:beta
+    restart: always
+    volumes:
+      - bitwarden:/data/bitwarden
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # Router
+      - "traefik.http.routers.bitwarden.rule=Host(`bitwarden.home`)"
+      - "traefik.http.routers.bitwarden.entrypoints=websecure"
+      - "traefik.http.routers.bitwarden.tls=true"
+
+      # Service
+      - "traefik.http.services.bitwarden.loadbalancer.server.port=80"
+
+    networks:
+      - "local"
+      - "public"
+
+  bitwarden-db:
+    container_name: bitwarden-db
+    env_file:
+      - settings.env
+    environment:
+      MARIADB_USER: bitwarden
+      MARIADB_PASSWORD: bitwarden
+      MARIADB_DATABASE: "MySuperSecretBitwardenDatabasePassword"
+      MARIADB_RANDOM_ROOT_PASSWORD: "true"
+    image: mariadb:10
+    restart: always
+    volumes:
+      - bitwarden-db:/var/lib/mysql
+    networks:
+      - "local"
+
+networks:
+  local:
+    name: "bitwarden"
+  public:
+    external: true
+    name: webproxy
+
+volumes:
+  bitwarden:
+  bitwarden-db:

@@ -1,0 +1,91 @@
+- name: Install Bitwarden
+  hosts: pi5
+  become: true
+  vars:
+    app_name: "bitwarden"
+    app_dir: "/data/bitwarden"
+    app_user: "bitwarden"
+    app_group: "docker"
+    docker_port_http: "8080"
+    host: "bitwarden.home"
+
+  tasks:
+    - name: "Create {{ app_user}} user"
+      ansible.builtin.user:
+        name: "{{ app_user}}"
+        comment: Bitwarden user
+        group: "{{ app_group}}"
+    - name: "Create directories {{ app_name }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0700"
+      loop:
+        - "{{ app_dir }}"
+
+    - name: Install app files
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      loop:
+        - src: "compose.yml"
+          dest: "{{ app_dir }}/compose.yml"
+        - src: "settings.env.j2"
+          dest: "{{ app_dir }}/.env"
+
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.copy:
+        src: "../miscelaneous/etc/systemd/system/compose.service.template"
+        dest: "/etc/systemd/system/{{ app_name }}.service.tmp"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Substitute variables for service {{ app_name }}"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ item.regexp }}"
+        replace: '{{ item.replace }}'
+      loop:
+        - path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+          regexp: "___APP_NAME___"
+          replace: "{{ app_name }}"
+        - path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+          regexp: "___APP_DIR___"
+          replace: '{{ app_dir }}'
+
+    - name: "Create / update service file"
+      ansible.builtin.copy:
+        remote_src: true
+        src: "/etc/systemd/system/{{ app_name }}.service.tmp"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Remove temporary service file
+      ansible.builtin.file:
+        path: "/etc/systemd/system/{{ app_name }}.service.tmp"
+        state: absent
+
+    - name: "Enable service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        enabled: true
+
+    - name: "Start service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        state: restarted
+
+    - name: "Add local dns record"
+      delegate_to: localhost
+      ansible.builtin.lineinfile:
+        dest: ../miscelaneous/local_dns_records.list
+        line: '{{ ansible_host }} {{ host }}'
+        state: present
