@@ -3,26 +3,22 @@ services:
     container_name: home-assistant
     image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
-      - /data/home-assistant/development/homeassistant/components/modbus:/usr/src/homeassistant/homeassistant/components/modbus
+      #- /data/home-assistant/development/homeassistant/components/modbus:/usr/src/homeassistant/homeassistant/components/modbus
       - /data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     devices:
-      - /dev/serial/by-id/___USB_MODBUS_ID___:/dev/ttyUSB0
-      - /dev/serial/by-id/___USB_P1_ID___:/dev/ttyUSB1
-      - /dev/serial/by-id/___USB_ZIGBEE_ID___:/dev/ttyUSB2
+      - /dev/serial/by-id/{{ usb_modbus_id }}:/dev/ttyUSB0
+      - /dev/serial/by-id/{{ usb_p1_id }}:/dev/ttyUSB1
+      - /dev/serial/by-id/{{ usb_zigbee_id }}:/dev/ttyUSB2
     cap_add:
       - NET_ADMIN
     labels:
-      - "traefik.backend=home-assistant"
-      - "traefik.docker.network=webproxy"
-      - "traefik.http.routers.home-assistant.rule=Host(`hass.home`)"
-      - "traefik.frontend.rule=Host:hass.home"
-      - "traefik.http.routers.home-assistant.entrypoints=web"
       - "traefik.enable=true"
-      - "traefik.port=8123"
-      - "traefik.default.protocol=http"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.home-assistant.rule=Host(`hass.{{ local_domain }}`) || Host(`hass.{{ public_domain }}`)"
+      - "traefik.http.routers.home-assistant.entrypoints=web"
       - "traefik.http.services.home-assistant.loadbalancer.server.port=8123"
     networks:
        - public
@@ -30,8 +26,8 @@ services:
     ports:
       - "8123:8123"
     dns:
-      - '___DNS_1___'
-      - '___DNS_2___'
+      - '{{ dns_1 }}'
+      - '{{ dns_2 }}'
 
 networks:
   local:
