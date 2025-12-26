@@ -1,0 +1,15 @@
+[Unit]
+Description={{ app_name }} (docker compose)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory={{ app_dir }}
+ExecStart=/usr/bin/docker compose -f {{ app_dir }}/compose.yml up -d
+ExecStop=/usr/bin/docker compose -f {{ app_dir }}/compose.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

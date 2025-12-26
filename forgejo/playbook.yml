@@ -1,0 +1,60 @@
+- name: Install NextCloud
+  hosts: pi5
+  become: true
+  vars:
+    app_name: "forgejo"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+    docker_port_http: "80"
+
+  tasks:
+    - name: "Create {{ app_user}} user"
+      ansible.builtin.user:
+        name: "{{ app_user}}"
+        group: "{{ app_group}}"
+    - name: "Create directories {{ app_name }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0700"
+      loop:
+        - "{{ app_dir }}"
+
+    - name: Install app files
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0644"
+      loop:
+        - src: "compose.yml.j2"
+          dest: "{{ app_dir }}/compose.yml"
+
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.template:
+        src: "../miscelaneous/etc/systemd/system/compose.service.template.j2"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: "Enable service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        enabled: true
+
+    - name: "Start service {{ app_name }}"
+      ansible.builtin.service:
+        name: "{{ app_name }}"
+        state: restarted
+
+    - name: "Add local dns record"
+      delegate_to: localhost
+      ansible.builtin.lineinfile:
+        dest: ../miscelaneous/local_dns_records.list
+        line: '{{ ansible_host }} {{ app_name }}.{{ local_domain}}'
+        state: present

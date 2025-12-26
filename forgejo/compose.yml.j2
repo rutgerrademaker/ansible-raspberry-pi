@@ -1,0 +1,47 @@
+# More info at https://forgejo.org/docs/next/admin/installation/docker/
+services:
+  "{{ app_name }}":
+    container_name: "{{ app_name }}"
+    image: "codeberg.org/forgejo/forgejo:13"
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+      - /etc/localtime:/etc/localtime:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # Router
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ app_name }}.{{ local_domain }}`) || Host(`{{ app_name }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=web"
+      #- "traefik.http.routers.{{ app_name }}.tls=true"
+      #- "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+      #- "traefik.http.routers{{ app_name }}.tls.certresolver=letsencrypt"
+
+      # Service
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port=3000"
+
+      # Middleware
+      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+      - "traefik.tcp.routers.{{ app_name }}-ssh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.{{ app_name }}-ssh.entrypoints=ssh"
+      - "traefik.tcp.routers.{{ app_name }}-ssh.service={{ app_name }}-ssh-svc"
+      - "traefik.tcp.services.{{ app_name }}-ssh-svc.loadbalancer.server.port=22"
+    # ports:
+    #   - '3000:3000'
+    #   - '222:22'
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+     name: "{{ app_name }}"
+
+  public:
+    external: true
+    name: "webproxy"
