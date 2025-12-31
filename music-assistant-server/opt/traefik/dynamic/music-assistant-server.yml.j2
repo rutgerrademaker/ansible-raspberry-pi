@@ -1,0 +1,13 @@
+http:
+  routers:
+    '{{ app_name }}':
+      rule: "Host(`{{ subdomain }}.{{ local_domain }}`) || Host(`{{ subdomain }}.{{ public_domain }}`)"
+      entryPoints:
+        - web
+      service: '{{ app_name }}'
+
+  services:
+    '{{ app_name }}':
+      loadBalancer:
+        servers:
+          - url: "http://10.0.0.53:{{ docker_port_http }}"

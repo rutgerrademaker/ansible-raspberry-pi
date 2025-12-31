@@ -17,6 +17,15 @@
         mode: "0755"
       loop:
         - /data/traefik
+        - /data/traefik/dynamic
+
+    - name: Install traefike config file
+      ansible.builtin.template:
+        src: traefik.yml
+        dest: /data/traefik/traefik.yml
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
 
     - name: Install compose file
       ansible.builtin.template:

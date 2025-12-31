@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.pihole1.rule=Host(`pihole1.{{ local_domain }}`) || Host(`pihole1.{{ public_domain }}`)"
       - "traefik.http.routers.pihole1.entrypoints=web"
       #- "traefik.http.routers.pihole1.tls=true"
-      - "traefik.http.routers.pihole1-http.middlewares=redirect-to-https"
+      #- "traefik.http.routers.pihole1-http.middlewares=redirect-to-https"
       #- "traefik.http.routers.pihole.tls.certresolver=letsencrypt"
 
       - "traefik.udp.routers.dns-udp.entrypoints=dns-udp"
@@ -30,7 +30,7 @@ services:
       - "traefik.udp.services.pihole1.loadbalancer.server.port=53"
 
       # Middleware
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
     networks:
       - "local"

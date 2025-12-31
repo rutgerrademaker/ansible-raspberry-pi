@@ -8,8 +8,7 @@
     app_group: "{{ ansible_group }}"
     docker_port_http: "8095"
     docker_port_tcp: "8097"
-    host: "hass.home"
-
+    subdomain: "mas"
   tasks:
     - name: Create Home Assistant directories
       ansible.builtin.file:
@@ -22,9 +21,17 @@
         - /data/music-assistant-server
 
     - name: Install Music Assistant Server compose file
-      ansible.builtin.copy:
-        src: compose.yml
+      ansible.builtin.template:
+        src: compose.yml.j2
         dest: /data/music-assistant-server/compose.yml
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+
+    - name: Install Music Assistant Traefik file
+      ansible.builtin.template:
+        src: opt/traefik/dynamic/music-assistant-server.yml.j2
+        dest: /data/traefik/dynamic/music-assistant-server.yml
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"

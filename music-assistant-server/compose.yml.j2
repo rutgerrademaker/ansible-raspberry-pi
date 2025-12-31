@@ -1,0 +1,44 @@
+services:
+  music-assistant-server:
+    image: ghcr.io/music-assistant/server:latest # <<< Desired release version here (or use beta to get the latest beta version)
+    container_name: music-assistant-server
+    restart: unless-stopped
+    # Network mode must be set to host for MA to work correctly
+    network_mode: host
+    volumes:
+      - /data/music-assistant-server/data:/data/
+    # privileged caps (and security-opt) needed to mount smb folders within the container
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      # Provide logging level as environment variable.
+      # default=info, possible=(critical, error, warning, info, debug)
+      - LOG_LEVEL=warning
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=bridge"
+    #   - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ local_domain }}`) || Host(`{{ subdomain }}.{{ public_domain }}`)"
+    #   - "traefik.http.routers.{{ app_name }}.entrypoints=web"
+    #   - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
+    # networks:
+    #   - "local"
+    #   - "public"
+    # ports:
+    #   - 8008:8008/tcp
+    #   - 8009:8009/tcp
+    #   #- 8443:8443/tcp
+    #   - 5353:5353/udp
+    #   - 1900:1900/udp
+    #   - '{{ docker_port_http }}:{{ docker_port_http }}/tcp'
+    #   - '{{ docker_port_tcp }}:{{ docker_port_tcp }}/tcp'
+
+networks:
+  local:
+     name: "{{ app_name }}"
+
+  public:
+    external: true
+    name: "webproxy"

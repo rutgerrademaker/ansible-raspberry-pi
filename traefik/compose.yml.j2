@@ -7,6 +7,8 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.watch=true"
+      - "--providers.file.directory=/dynamic"
       - "--entryPoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--providers.file.watch=true"
@@ -31,7 +33,9 @@ services:
       - "222:222"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt:/letsencrypt"
+      - "/data/traefik/letsencrypt:/letsencrypt"
+      - "/data/traefik/dynamic:/dynamic"
+    restart : unless-stopped
     networks:
       - public
       - local

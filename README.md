@@ -142,7 +142,7 @@ An open source MQTT broker.
 Music Assistant is a music library manager for your offline and online music sources which can easily stream your favourite music to a wide range of supported players and be combined with the power of Home Assistant!
 
 - Docs <https://www.music-assistant.io/>
-- Web interface: <https://mass.home/>
+- Web interface: <http://mas.home/>
 
 ### Nextcloud
 
@@ -159,11 +159,9 @@ NEXTCLOUD_DB_PASSWORD: "NextCloudDbPassword"
 ### Pi Hole
 
 Network-wide Ad Blocking.
-Urls are based on the configured `inventory_hostname` in the ansible inventory.
 
 - Web interface:
-  - <http://pihole.pi5.home/admin/>
-  - <http://pihole.pi4.home/admin/>
+  - <http://pihole1.home/admin/>
 - Docs: <https://pi-hole.net/>
 - Docs: <https://github.com/pi-hole/docker-pi-hole>
 
