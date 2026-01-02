@@ -1,0 +1,45 @@
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    container_name: "pihole"
+    image: "pihole/pihole:latest"
+    environment:
+      TZ: "Europe/Amsterdam"
+      WEBPASSWORD: "{{ pihole_web_password }}"
+    volumes:
+      - "/data/pihole/etc-pihole:/etc/pihole"
+      - "/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+    restart: "unless-stopped"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # Router
+      - "traefik.http.routers.pihole1.rule=Host(`pihole1.{{ local_domain }}`) || Host(`pihole1.{{ public_domain }}`)"
+      - "traefik.http.routers.pihole1.entrypoints=web"
+      #- "traefik.http.routers.pihole1.tls=true"
+      #- "traefik.http.routers.pihole1-http.middlewares=redirect-to-https"
+      #- "traefik.http.routers.pihole.tls.certresolver=letsencrypt"
+
+      - "traefik.udp.routers.dns-udp.entrypoints=dns-udp"
+      - "traefik.udp.routers.dns-udp.service=pihole1"
+
+      # Service
+      - "traefik.http.services.pihole1.loadbalancer.server.port=80"
+      - "traefik.tcp.services.pihole1.loadbalancer.server.port=53"
+      - "traefik.udp.services.pihole1.loadbalancer.server.port=53"
+
+      # Middleware
+      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+     name: "pihole"
+
+  public:
+    external: true
+    name: "webproxy"

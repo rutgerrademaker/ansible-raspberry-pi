@@ -1,5 +1,5 @@
 - name: Install Portainer
-  hosts: pihole
+  hosts: pi5
   become: true
   vars:
     app_name: "portainer"

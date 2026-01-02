@@ -1,7 +1,9 @@
 {
     "ansible.validation.lint.enabled": true,
     "files.associations": {
-        "traefik.yml": "ansible"
+        "traefik.yml": "ansible",
+        "*.yml.j2": "yaml",
+        "*.yaml.j2": "yaml"
       },
       "ansible.python.interpreterPath": "/bin/python3",
       "cSpell.words": [

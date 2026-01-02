@@ -31,42 +31,12 @@
         accept_hostkey: true
 
     - name: Install Home Assistant compose file
-      ansible.builtin.copy:
-        src: compose.yml
+      ansible.builtin.template:
+        src: compose.yml.j2
         dest: /data/home-assistant/compose.yml
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
-
-    - name: Substitute P1 usb id
-      ansible.builtin.replace:
-        path: /data/home-assistant/compose.yml
-        regexp: '___USB_P1_ID___'
-        replace: '{{ usb_p1_id }}'
-
-    - name: Substitute Modbus usb id
-      ansible.builtin.replace:
-        path: /data/home-assistant/compose.yml
-        regexp: '___USB_MODBUS_ID___'
-        replace: '{{ usb_modbus_id }}'
-
-    - name: Substitute Zigbee usb id
-      ansible.builtin.replace:
-        path: /data/home-assistant/compose.yml
-        regexp: '___USB_ZIGBEE_ID___'
-        replace: '{{ usb_zigbee_id }}'
-
-    - name: Substitute DNS 1
-      ansible.builtin.replace:
-        path: /data/home-assistant/compose.yml
-        regexp: '___DNS_1___'
-        replace: '{{ dns_1 }}'
-
-    - name: Substitute DNS 2
-      ansible.builtin.replace:
-        path: /data/home-assistant/compose.yml
-        regexp: '___DNS_2___'
-        replace: '{{ dns_2 }}'
 
     - name: Install Home Assistant service
       ansible.builtin.copy:

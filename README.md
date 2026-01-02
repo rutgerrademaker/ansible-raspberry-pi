@@ -14,6 +14,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
       - [Loki](#loki)
       - [Promtail](#promtail)
     - [Gpodder](#gpodder)
+    - [Forgejo](#forgejo)
     - [Home Assistant](#home-assistant)
     - [Immich](#immich)
     - [MediaMTX](#mediamtx)
@@ -49,6 +50,22 @@ Database management in a single PHP file (but then in docker).
 For now this only has access to the `immich` network.
 It can be started from the `/data/adminer` directory with the `docker compose up -d` command.
 
+### Bitwarden
+
+- Web interface:
+  - [<http://adminer.pi4.home/](http://bitwarden.home/)>
+
+#### Needed secrets
+
+# The password for accessing the Bitwarden database.
+BW_DB_PASSWORD: "YourDatabasePassword"
+
+# A valid installation ID generated from https://bitwarden.com/host/.
+BW_INSTALLATION_ID: "YourInstallationID"
+
+# A valid installation key generated from https://bitwarden.com/host/.
+BW_INSTALLATION_KEY: "YourInstallationKey"
+
 ### Frigate NVR
 
 Monitor your security cameras with locally processed AI.
@@ -76,6 +93,15 @@ like Prometheus, but for logs
 
 - Docs:
   - <https://grafana.com/docs/loki/latest/send-data/promtail/#promtail-agent>
+
+### Forgejo
+
+A painless, self-hosted Git service
+
+- Web interface: <http://forgejo.home/>
+- Docs:
+  - <http://forgejo.home/>
+  - <https://forgejo.org/docs/next/admin/installation/docker/>
 
 ### Gpodder
 
@@ -126,7 +152,7 @@ An open source MQTT broker.
 Music Assistant is a music library manager for your offline and online music sources which can easily stream your favourite music to a wide range of supported players and be combined with the power of Home Assistant!
 
 - Docs <https://www.music-assistant.io/>
-- Web interface: <https://mass.home/>
+- Web interface: <http://mas.home/>
 
 ### Nextcloud
 
@@ -143,11 +169,9 @@ NEXTCLOUD_DB_PASSWORD: "NextCloudDbPassword"
 ### Pi Hole
 
 Network-wide Ad Blocking.
-Urls are based on the configured `inventory_hostname` in the ansible inventory.
 
 - Web interface:
-  - <http://pihole.pi5.home/admin/>
-  - <http://pihole.pi4.home/admin/>
+  - <http://pihole1.home/admin/>
 - Docs: <https://pi-hole.net/>
 - Docs: <https://github.com/pi-hole/docker-pi-hole>
 
@@ -227,8 +251,6 @@ homeserver:
       ansible_host: 10.0.0.53
       system_user: rutger
       system_group: rutger
-      dns_1: "1.1.1.1"
-      dns_2: "1.0.0.1"      
       eth0_ip: "10.0.0.53/24"
       wlan0_ip: "10.0.0.54/24"
       gateway_ip: "10.0.0.1"
@@ -265,6 +287,13 @@ immich_db_password: "YourSecretImmichDbPassword"
 
 # This token needs to be created in Home Assistant and grants access to prometheus
 hass_long_lived_access_token_prometheus: "YourHassLongLivedAccesTokenForPrometheus"
+
+dns_1: 1.0.0.1
+dns_2: 1.1.1.1
+
+letsencrypt_email: "test@example.com"
+local_domain: "local"
+local_domain: "example.com"
 ```
 
 ```shell

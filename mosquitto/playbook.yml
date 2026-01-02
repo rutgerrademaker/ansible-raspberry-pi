@@ -25,7 +25,7 @@
       loop:
         - /data/mosquitto
 
-    - name: Pihole Mosquitto compose file
+    - name: Mosquitto compose file
       ansible.builtin.copy:
         src: compose.yml
         dest: /data/mosquitto/compose.yml
