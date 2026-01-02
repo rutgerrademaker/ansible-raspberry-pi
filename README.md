@@ -14,6 +14,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
       - [Loki](#loki)
       - [Promtail](#promtail)
     - [Gpodder](#gpodder)
+    - [Forgejo](#forgejo)
     - [Home Assistant](#home-assistant)
     - [Immich](#immich)
     - [MediaMTX](#mediamtx)
@@ -92,6 +93,15 @@ like Prometheus, but for logs
 
 - Docs:
   - <https://grafana.com/docs/loki/latest/send-data/promtail/#promtail-agent>
+
+### Forgejo
+
+A painless, self-hosted Git service
+
+- Web interface: <http://forgejo.home/>
+- Docs:
+  - <http://forgejo.home/>
+  - <https://forgejo.org/docs/next/admin/installation/docker/>
 
 ### Gpodder
 

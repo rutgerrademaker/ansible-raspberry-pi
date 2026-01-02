@@ -101,12 +101,15 @@
 - name: Unifi Network Application
   ansible.builtin.import_playbook: unifi-network-application/playbook.yml
 
-# - name: Grafana
-#   ansible.builtin.import_playbook: grafana/playbook.yml
+- name: Forgejo
+  ansible.builtin.import_playbook: grafana/playbook.yml
 
-# - name: Prometheus
-#   ansible.builtin.import_playbook: prometheus/playbook.yml
+- name: Grafana
+  ansible.builtin.import_playbook: grafana/playbook.yml
 
-- name: OpenWrt
-  ansible.builtin.import_playbook: openwrt/playbook.yml
+- name: Prometheus
+  ansible.builtin.import_playbook: prometheus/playbook.yml
+
+#- name: OpenWrt
+#  ansible.builtin.import_playbook: openwrt/playbook.yml
 ...

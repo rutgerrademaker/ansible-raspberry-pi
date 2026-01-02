@@ -1,8 +1,0 @@
-providers:
-  docker:
-    exposedByDefault: false
-  file:
-    directory: /dynamic
-    watch: true
-serversTransport:
-    insecureSkipVerify: true
