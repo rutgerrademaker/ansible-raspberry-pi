@@ -1,4 +1,4 @@
-- name: Install NextCloud
+- name: Install Forgejo
   hosts: pi5
   become: true
   vars:

@@ -13,6 +13,8 @@
         password: '{{ mosquitto_opendtu_pass }}'
       - username: 'frigate'
         password: '{{ mosquitto_frigate_pass }}'
+      - username: 'zigbee2mqtt'
+        password: '{{ mosquitto_zigbee2mqtt_pass }}'
 
   tasks:
     - name: Create Mosquitto directories

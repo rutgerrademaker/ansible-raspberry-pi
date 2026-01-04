@@ -1,0 +1,17 @@
+[ req ]
+prompt = no
+default_md = sha256
+distinguished_name = dn
+x509_extensions = v3_req
+
+[ dn ]
+{% for k, v in cert_subject.items() %}
+{{ k }} = {{ v }}
+{% endfor %}
+
+[ v3_req ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = *.{{ cert_domain }}
+DNS.2 = {{ cert_domain }}

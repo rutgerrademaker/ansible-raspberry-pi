@@ -1,0 +1,55 @@
+- name: Create self-signed wildcard cert and configure Traefik
+  hosts: pi5
+  become: true
+  vars_files:
+    - vars/cert.yml
+
+  tasks:
+    - name: Ensure cert directory exists
+      ansible.builtin.file:
+        path: "{{ cert_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Generate private key
+      community.crypto.openssl_privatekey:
+        path: "{{ cert_dir }}/home.key"
+        size: 4096
+        type: RSA
+        mode: "0600"
+
+    - name: Generate CSR for *.home
+      community.crypto.openssl_csr:
+        path: "{{ cert_dir }}/home.csr"
+        privatekey_path: "{{ cert_dir }}/home.key"
+        common_name: "*.{{ cert_domain }}"
+        country_name: "{{ cert_subject.C }}"
+        state_or_province_name: "{{ cert_subject.ST }}"
+        locality_name: "{{ cert_subject.L }}"
+        organization_name: "{{ cert_subject.O }}"
+        organizational_unit_name: "{{ cert_subject.OU }}"
+        subject_alt_name:
+          - "DNS:*.{{ cert_domain }}"
+          - "DNS:{{ cert_domain }}"
+
+    - name: Generate self-signed certificate from CSR
+      community.crypto.x509_certificate:
+        path: "{{ cert_dir }}/home.crt"
+        csr_path: "{{ cert_dir }}/home.csr"
+        privatekey_path: "{{ cert_dir }}/home.key"
+        provider: selfsigned
+        selfsigned_not_after: "+{{ cert_days }}d"
+      notify: Restart Traefik
+
+    - name: Configure Traefik TLS store
+      ansible.builtin.template:
+        src: traefik-tls.yml.j2
+        dest: "{{ traefik_dir }}/dynamic/tls.yml"
+        mode: "0644"
+      notify: Restart Traefik
+
+  handlers:
+    - name: Restart Traefik
+      ansible.builtin.service:
+        name: traefik
+        state: restarted

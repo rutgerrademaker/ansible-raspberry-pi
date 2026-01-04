@@ -31,9 +31,7 @@ services:
       - "traefik.tcp.routers.{{ app_name }}-ssh.entrypoints=ssh"
       - "traefik.tcp.routers.{{ app_name }}-ssh.service={{ app_name }}-ssh-svc"
       - "traefik.tcp.services.{{ app_name }}-ssh-svc.loadbalancer.server.port=22"
-    # ports:
-    #   - '3000:3000'
-    #   - '222:22'
+
     networks:
       - "local"
       - "public"

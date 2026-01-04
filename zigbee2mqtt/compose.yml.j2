@@ -1,0 +1,32 @@
+services:
+  "{{ app_name }}":
+    container_name: "{{ app_name }}"
+    restart: unless-stopped
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - /data/{{ app_name }}:/app/data
+      - /run/dbus:/run/dbus:ro
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/serial/by-id/{{ usb_zigbee2mqtt_id }}:/dev/ttyUSB0
+    environment:
+      - Z2M_ONBOARD_NO_REDIRECT=1
+    cap_add:
+      - NET_ADMIN
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ local_domain }}`) || Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=web"
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+    name: "{{ app_name }}"
+
+  public:
+    external: true
+    name: "webproxy"

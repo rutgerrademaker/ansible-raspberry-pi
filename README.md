@@ -28,6 +28,7 @@ This project is mostly a big note to my future self, in case my raspberry pi wou
       - [Node Exporter](#node-exporter)
     - [Traefik](#traefik)
     - [Unifi Network Application](#unifi-network-application)
+    - [Zigbee2MQTT](#zigbee2mqtt)
   - [Miscellaneous](#miscellaneous)
     - [Coral TPU packages \& drivers](#coral-tpu-packages--drivers)
     - [Home Assistant + Mosquitto migration script](#home-assistant--mosquitto-migration-script)
@@ -105,7 +106,7 @@ A painless, self-hosted Git service
 
 ### Gpodder
 
-Media aggregator and podcast client/
+Media aggregator and podcast client.
 
 - Web interface: <http://gpodder.home/>
 - Docs:
@@ -211,6 +212,13 @@ Self-Hosted a UniFi Network Server.
 
 - Web interface: <https://unifi.home:8443/>
 - Docs <https://github.com/linuxserver/docker-unifi-network-application>
+
+### Zigbee2MQTT
+
+Zigbee to MQTT bridge, get rid of your proprietary Zigbee bridges
+
+- Web interface: <https://z2m.home/>
+- Docs <https://www.zigbee2mqtt.io/>
 
 ## Miscellaneous
 
