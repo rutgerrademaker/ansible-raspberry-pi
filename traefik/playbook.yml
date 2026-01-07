@@ -35,18 +35,18 @@
         owner: root
         group: root
 
-    - name: Copy cert to local CA directory
-      ansible.builtin.copy:
-        src: "{{ cert_file }}"
-        dest: "/usr/local/share/ca-certificates/{{ cert_name }}.crt"
-        owner: root
-        group: root
-        mode: "0644"
-      become: true
+    # - name: Copy cert to local CA directory
+    #   ansible.builtin.copy:
+    #     src: "{{ cert_file }}"
+    #     dest: "/usr/local/share/ca-certificates/{{ cert_name }}.crt"
+    #     owner: root
+    #     group: root
+    #     mode: "0644"
+    #   become: true
 
-    - name: Update CA certificates
-      ansible.builtin.command: update-ca-certificates
-      become: true
+    # - name: Update CA certificates
+    #   ansible.builtin.command: update-ca-certificates
+    #   become: true
 
     - name: Enable traefik service
       ansible.builtin.service:

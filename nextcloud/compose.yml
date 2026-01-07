@@ -45,10 +45,10 @@ services:
       - "traefik.docker.network=webproxy"
 
       # Router
-      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.home`)"
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.home.arpa`)"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
       - "traefik.http.routers.nextcloud.tls=true"
-      - "traefik.http.routers.nextcloud-http.rule=Host(`nextcloud.home`)"
+      - "traefik.http.routers.nextcloud-http.rule=Host(`nextcloud.home.arpa`)"
       - "traefik.http.routers.nextcloud-http.entrypoints=web"
       - "traefik.http.routers.nextcloud-http.middlewares=redirect-to-https"
 
