@@ -1,0 +1,46 @@
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    container_name: "pihole"
+    image: "pihole/pihole:latest"
+    environment:
+      TZ: "Europe/Amsterdam"
+      WEBPASSWORD: "{{ pihole_web_password }}"
+    volumes:
+      - "/data/pihole/etc-pihole:/etc/pihole"
+      - "/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+    restart: "unless-stopped"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # HTTPS
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ app_name }}.tls=true"
+      - "traefik.http.routers.{{ app_name }}.tls.certresolver=letsencrypt"
+
+      # HTTP redirect
+      - "traefik.http.routers.{{ app_name }}-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
+      - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+
+      # DNS
+      - "traefik.udp.routers.{{ app_name }}-dns.entrypoints={{ app_name }}-dns"
+      - "traefik.udp.routers.{{ app_name }}-dns.service={{ app_name }}"
+
+      # Services
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
+      - "traefik.tcp.services.{{ app_name }}.loadbalancer.server.port=53"
+      - "traefik.udp.services.{{ app_name }}.loadbalancer.server.port=53"
+    networks:
+      - "local"
+      - "public"
+
+networks:
+  local:
+     name: "pihole"
+
+  public:
+    external: true
+    name: "webproxy"
