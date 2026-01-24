@@ -8,15 +8,9 @@
     app_group: "{{ ansible_group }}"
     docker_port_http: "80"
     host: "{{ app_name }}.{{ inventory_hostname }}.home"
+    subdomain: "{{ app_name }}1"
 
   tasks:
-    - name: "Add local dns record"
-      delegate_to: localhost
-      ansible.builtin.lineinfile:
-        dest: ../miscelaneous/local_dns_records.list
-        line: '{{ ansible_host }} {{ host }}'
-        state: present
-
     - name: "Create directories  {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
@@ -36,14 +30,14 @@
         group: "{{ app_group }}"
         mode: "0644"
       loop:
-        - src: "compose.yml.j2"
+        - src: "templates/compose.yml.j2"
           dest: "{{ app_dir }}/compose.yml"
         # - src: "../miscelaneous/local_dns_records.list"
         #   dest: "{{ app_dir }}/etc-pihole/custom.list"
 
     - name: "Install service for {{ app_name }}"
-      ansible.builtin.copy:
-        src: "etc/systemd/system/{{ app_name }}.service"
+      ansible.builtin.template:
+        src: "../miscelaneous/etc/systemd/system/compose.service.template.j2"
         dest: "/etc/systemd/system/{{ app_name }}.service"
         mode: "0644"
         owner: root
