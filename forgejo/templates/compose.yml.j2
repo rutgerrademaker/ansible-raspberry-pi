@@ -14,22 +14,24 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=webproxy"
 
-      # Router
-      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ app_name }}.{{ local_domain }}`) || Host(`{{ app_name }}.{{ public_domain }}`)"
-      - "traefik.http.routers.{{ app_name }}.entrypoints=web"
-      #- "traefik.http.routers.{{ app_name }}.tls=true"
-      #- "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
-      #- "traefik.http.routers{{ app_name }}.tls.certresolver=letsencrypt"
+      # HTTPS
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ app_name }}.tls=true"
+      - "traefik.http.routers.{{ app_name }}.tls.certresolver=letsencrypt"
 
-      # Service
-      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port=3000"
-
-      # Middleware
-      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-
+      # HTTP redirect
+      - "traefik.http.routers.{{ app_name }}-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
+      - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+      
+      # SSH
       - "traefik.tcp.routers.{{ app_name }}-ssh.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.{{ app_name }}-ssh.entrypoints=ssh"
       - "traefik.tcp.routers.{{ app_name }}-ssh.service={{ app_name }}-ssh-svc"
+
+      # Services
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
       - "traefik.tcp.services.{{ app_name }}-ssh-svc.loadbalancer.server.port=22"
 
     networks:

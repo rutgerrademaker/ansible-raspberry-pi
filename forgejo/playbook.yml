@@ -6,13 +6,15 @@
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
-    docker_port_http: "80"
+    docker_port_http: "3000"
+    subdomain: "forgejo"
 
   tasks:
     - name: "Create {{ app_user}} user"
       ansible.builtin.user:
         name: "{{ app_user}}"
         group: "{{ app_group}}"
+
     - name: "Create directories {{ app_name }}"
       ansible.builtin.file:
         path: "{{ item }}"
@@ -31,7 +33,7 @@
         group: "{{ app_group }}"
         mode: "0644"
       loop:
-        - src: "compose.yml.j2"
+        - src: "templates/compose.yml.j2"
           dest: "{{ app_dir }}/compose.yml"
 
     - name: "Install service for {{ app_name }}"
@@ -51,10 +53,3 @@
       ansible.builtin.service:
         name: "{{ app_name }}"
         state: restarted
-
-    - name: "Add local dns record"
-      delegate_to: localhost
-      ansible.builtin.lineinfile:
-        dest: ../miscelaneous/local_dns_records.list
-        line: '{{ ansible_host }} {{ app_name }}.{{ local_domain}}'
-        state: present
