@@ -1,0 +1,17 @@
+traefik_dir: /data/traefik
+ca_dir: /data/traefik/ca
+cert_dir: /data/traefik/certs
+crl_dir: /data/traefik/crl
+
+ca_name: home.arpa
+cert_domain: home.arpa
+
+ca_valid_days: 3650     # 10 years
+cert_valid_days: 825    # browser-safe wildcard
+
+subject:
+  C: NL
+  ST: Groningen
+  L: Groningen
+  O: Team Rutger
+  OU: IT

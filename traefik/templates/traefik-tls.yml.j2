@@ -1,0 +1,24 @@
+tls:
+  domains:
+    - main: "{{ public_domain }}"
+      sans:
+        - "*."
+http:
+  routers:
+    wildcard-cert:
+      rule: Host(`wildcard.{{ public_domain }}`)
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "{{ public_domain }}"
+            sans:
+              - "*.{{ public_domain }}"
+      service: noop
+
+  services:
+    noop:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1

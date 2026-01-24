@@ -1,0 +1,40 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    environment:
+      - DOMAIN=https://vault.{{ public_domain }}/
+    volumes:
+      - /data/vaultwarden/data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # HTTPS router
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ app_name }}.tls=true"
+      - "traefik.http.routers.{{ app_name }}.tls.certresolver=letsencrypt"
+
+      # HTTP redirect
+      - "traefik.http.routers.{{ app_name }}-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
+      - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
+    networks:
+      - "local"
+      - "public"
+    # ports:
+    #   #- 18000:80
+    #   - 18000:443
+
+networks:
+  local:
+    name: "{{ app_name }}"
+  public:
+    external: true
+    name: webproxy

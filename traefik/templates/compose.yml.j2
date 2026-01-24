@@ -1,0 +1,99 @@
+
+services:
+  traefik:
+    image: "traefik:v3.0"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.watch=true"
+      - "--providers.file.directory=/dynamic"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email={{ letsencrypt_email }}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.delayBeforeCheck=10"
+      #- "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      # This is needed for Unifi Network Application
+      #- "--serversTransport.insecureSkipVerify=true"
+      # DNS
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
+      - "--entrypoints.dns.address=:53/tcp"
+      - "--entrypoints.dns-udp.address=:53/udp"
+      # SSH
+      - "--entrypoints.ssh.address=:222"
+    env_file:
+      - .env
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "80:80"
+      - "443:443"
+      - "222:222"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "./dynamic:/dynamic:ro"
+      - "./certs:/certs:ro"
+      - "./etc/traefik/tls.yml:/etc/traefik/tls.yml:ro"
+      - "./crl:/crl/:ro"
+    restart : unless-stopped
+    networks:
+      - public
+      - local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # HTTPS dashboard
+      - "traefik.http.routers.traefik.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.traefik-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.traefik-http.entrypoints=web"
+      - "traefik.http.routers.traefik-http.middlewares=redirect-to-https"
+      - "traefik.http.routers.traefik-http.service=api@internal"
+
+      # Middleware
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+      # Wildcard cert trigger
+      - "traefik.http.routers.wildcard.rule=Host(`wildcard.{{ public_domain }}`)"
+      - "traefik.http.routers.wildcard.entrypoints=websecure"
+      - "traefik.http.routers.wildcard.tls=true"
+      - "traefik.http.routers.wildcard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.wildcard.tls.domains[0].main={{ public_domain }}"
+      - "traefik.http.routers.wildcard.tls.domains[0].sans=*.{{ public_domain }}"
+      - "traefik.http.routers.wildcard.service=wildcard"
+      - "traefik.http.services.wildcard.loadbalancer.server.port=9999"
+    dns:
+      - '{{ dns_1 }}'
+      - '{{ dns_2 }}'
+
+  crl:
+    image: nginx:alpine
+    container_name: crl
+    volumes:
+      - /data/traefik/crl/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /data/traefik/crl:/usr/share/nginx/html:ro
+      - ./certs:/etc/nginx/certs:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.crl.rule=Host(`ca.{{ cert_domain }}`)"
+      - "traefik.http.routers.crl.entrypoints=web"
+      - "traefik.http.services.crl.loadbalancer.server.port=80"
+    networks:
+      - local
+
+networks:
+  public:
+    name: "webproxy"
+  local:
+    name: traefik
