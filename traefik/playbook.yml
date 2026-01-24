@@ -6,6 +6,8 @@
     app_dir: "/data/{{ app_name }}"
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
+    subdomain: "{{ app_name }}"
+    cert_domain: "home.arpa"
 
   tasks:
     - name: Create directories
@@ -18,11 +20,28 @@
       loop:
         - /data/traefik
         - /data/traefik/dynamic
+        - /data/traefik/crl
 
     - name: Install compose file
       ansible.builtin.template:
-        src: compose.yml.j2
+        src: templates/compose.yml.j2
         dest: /data/traefik/compose.yml
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+
+    - name: Install compose file
+      ansible.builtin.template:
+        src: templates/.env.j2
+        dest: /data/traefik/.env
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0600"
+
+    - name: Install nginx config file
+      ansible.builtin.template:
+        src: templates/crl/nginx.conf.j2
+        dest: /data/traefik/crl/nginx.conf
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
@@ -34,19 +53,6 @@
         mode: "0644"
         owner: root
         group: root
-
-    # - name: Copy cert to local CA directory
-    #   ansible.builtin.copy:
-    #     src: "{{ cert_file }}"
-    #     dest: "/usr/local/share/ca-certificates/{{ cert_name }}.crt"
-    #     owner: root
-    #     group: root
-    #     mode: "0644"
-    #   become: true
-
-    # - name: Update CA certificates
-    #   ansible.builtin.command: update-ca-certificates
-    #   become: true
 
     - name: Enable traefik service
       ansible.builtin.service:

@@ -12,7 +12,9 @@
         mode: "0755"
       loop:
         - "{{ ca_dir }}"
+        - "{{ ca_dir }}/newcerts"
         - "{{ cert_dir }}"
+        - "{{ crl_dir }}"
 
     - name: Remove old cert files
       ansible.builtin.file:
@@ -84,50 +86,116 @@
           - cRLSign
       when: not ca_csr_stat.stat.exists
 
-    - name: Self-sign CA certificate
-      community.crypto.x509_certificate:
+    - name: Check if CA cert exists
+      ansible.builtin.stat:
         path: "{{ ca_dir }}/{{ ca_name }}.crt"
-        csr_path: "{{ ca_dir }}/{{ ca_name }}.csr"
-        privatekey_path: "{{ ca_dir }}/{{ ca_name }}.key"
-        provider: selfsigned
-        selfsigned_not_after: "+{{ ca_valid_days }}d"
-
-    - name: Sign leaf cert with local CA
-      community.crypto.x509_certificate:
-        path: "{{ cert_dir }}/{{ cert_domain }}.crt"
-        csr_path: "{{ cert_dir }}/{{ cert_domain }}.csr"
-        ownca_path: "{{ ca_dir }}/{{ ca_name }}.crt"
-        ownca_privatekey_path: "{{ ca_dir }}/{{ ca_name }}.key"
-        provider: ownca
-
-    - name: Sign leaf cert with local CA
-      community.crypto.x509_certificate:
-        path: "{{ cert_dir }}/{{ cert_domain }}.crt"
-        csr_path: "{{ cert_dir }}/{{ cert_domain }}.csr"
-        ownca_path: "{{ ca_dir }}/{{ ca_name }}.crt"
-        ownca_privatekey_path: "{{ ca_dir }}/{{ ca_name }}.key"
-        provider: ownca
-
-    - name: Read leaf certificate from remote
-      ansible.builtin.slurp:
-        src: "{{ cert_dir }}/{{ cert_domain }}.crt"
-      register: leaf_cert
-
-    - name: Read CA certificate from remote
-      ansible.builtin.slurp:
-        src: "{{ ca_dir }}/{{ ca_name }}.crt"
-      register: ca_cert
-
-    - name: Build fullchain certificate
-      ansible.builtin.copy:
-        dest: "{{ cert_dir }}/{{ cert_domain }}-fullchain.crt"
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          {{ leaf_cert.content | b64decode }}
-          {{ ca_cert.content | b64decode }}
+      register: ca_crt_stat
      
+    - name: Ensure CA database files exist
+      ansible.builtin.file:
+        path: "{{ ca_dir }}/{{ item }}"
+        state: touch
+        mode: "0644"
+      loop:
+        - index.txt
+        - serial
+        - crlnumber
+      when: not ca_crt_stat.stat.exists
+
+    - name: Initialize CA serial
+      ansible.builtin.copy:
+        dest: "{{ ca_dir }}/serial"
+        content: "1000\n"
+        mode: "0644"
+      when: not ca_crt_stat.stat.exists
+
+    - name: Initialize CA crlnumber
+      ansible.builtin.copy:
+        dest: "{{ ca_dir }}/crlnumber"
+        content: "1000\n"
+        mode: "0644"
+      when: not ca_crt_stat.stat.exists
+
+    - name: Install OpenSSL CA config
+      ansible.builtin.template:
+        src: openssl-ca.cnf.j2
+        dest: "{{ ca_dir }}/openssl-ca.cnf"
+        mode: "0644"
+      #when: not ca_crt_stat.stat.exists
+
+    - name: Generate CA certificate with v3_ca extensions
+      ansible.builtin.command:
+        cmd: >
+          openssl x509
+          -req
+          -in {{ ca_dir }}/{{ ca_name }}.csr
+          -signkey {{ ca_dir }}/{{ ca_name }}.key
+          -days {{ ca_valid_days }}
+          -sha256
+          -extfile {{ ca_dir }}/openssl-ca.cnf
+          -extensions v3_ca
+          -out {{ ca_dir }}/{{ ca_name }}.crt
+      args:
+        creates: "{{ ca_dir }}/{{ ca_name }}.crt"
+      when: not ca_crt_stat.stat.exists
+
+    - name: Generate CA CRL
+      ansible.builtin.command:
+        cmd: >
+          openssl ca -gencrl
+          -config {{ ca_dir }}/openssl-ca.cnf
+          -out {{ crl_dir }}/{{ ca_name }}.crl
+      environment:
+        OPENSSL_CONF: "{{ ca_dir }}/openssl-ca.cnf"
+      changed_when: true
+  
+    - name: Generate CSR with SAN and server auth
+      community.crypto.openssl_csr:
+        path: "{{ cert_dir }}/{{ cert_domain }}.csr"
+        privatekey_path: "{{ cert_dir }}/{{ cert_domain }}.key"
+        common_name: "*.{{ cert_domain }}"
+        subject_alt_name:
+          - "DNS:*.{{ cert_domain }}"
+          - "DNS:{{ cert_domain }}"
+        key_usage:
+          - digitalSignature
+          - keyEncipherment
+        extended_key_usage:
+          - serverAuth
+
+    # - name: Sign leaf certificate with CRL DP (OpenSSL)
+    #   ansible.builtin.command:
+    #     cmd: >
+    #       openssl ca
+    #       -config {{ ca_dir }}/openssl-ca.cnf
+    #       -extensions server_cert
+    #       -in {{ cert_dir }}/{{ cert_domain }}.csr
+    #       -out {{ cert_dir }}/{{ cert_domain }}.crt
+    #       -batch
+    #   environment:
+    #     OPENSSL_CONF: "{{ ca_dir }}/openssl-ca.cnf"
+    #   changed_when: true
+
+    # - name: Read leaf certificate from remote
+    #   ansible.builtin.slurp:
+    #     src: "{{ cert_dir }}/{{ cert_domain }}.crt"
+    #   register: leaf_cert
+
+    # - name: Read CA certificate from remote
+    #   ansible.builtin.slurp:
+    #     src: "{{ ca_dir }}/{{ ca_name }}.crt"
+    #   register: ca_cert
+
+    # - name: Build fullchain certificate
+    #   ansible.builtin.copy:
+    #     dest: "{{ cert_dir }}/{{ cert_domain }}-fullchain.crt"
+    #     owner: root
+    #     group: root
+    #     mode: "0644"
+    #     content: |
+    #       {{ leaf_cert.content | b64decode }}
+    #       {{ ca_cert.content | b64decode }}
+
     - name: Configure Traefik TLS store
       ansible.builtin.template:
         src: traefik-tls.yml.j2
