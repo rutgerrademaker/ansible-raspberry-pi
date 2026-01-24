@@ -18,7 +18,7 @@ services:
     volumes:
       - /data/unifi-network-application:/config
     ports:
-      - 8443:8443
+      #- 8443:8443
       - 3478:3478/udp
       - 10001:10001/udp
       # Port 8080 is used for adopting, for now this does not yet work via Traefik
@@ -30,22 +30,29 @@ services:
       #- 5514:5514/udp #optional
     restart: unless-stopped
     labels:
-      - traefik.docker.network=webproxy
-      - traefik.enable=true
-      - traefik.http.routers.unifi.rule=Host(`unifi.home`)
-      - traefik.http.routers.unifi.entrypoints=web
-      - traefik.backend=unifi
-      - traefik.frontend.rule=Host:unifi.home
-      - traefik.port=8443
-      - traefik.default.protocol=http
-      - traefik.http.services.unifi.loadbalancer.server.port=8443
-      - traefik.http.services.unifi.loadbalancer.server.scheme=https
+      - "traefik.enable=true"
+      - "traefik.docker.network=webproxy"
+
+      # HTTPS router
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ app_name }}.tls=true"
+      - "traefik.http.routers.{{ app_name }}.tls.certresolver=letsencrypt"
+      
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.scheme=https"
+
+      # HTTP redirect
+      - "traefik.http.routers.{{ app_name }}-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
+      - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+
     networks:
       - unifi
       - public
 
   mongo-db:
-    image: docker.io/mongo:latest
+    image: mongo:7.0
     container_name: unifi-mongo-db
     volumes:
       - /data/unifi-network-application/mongo-db:/data/db

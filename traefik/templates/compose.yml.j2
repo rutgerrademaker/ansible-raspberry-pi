@@ -17,7 +17,7 @@ services:
       - "--certificatesresolvers.letsencrypt.acme.dnsChallenge.delayBeforeCheck=10"
       #- "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       # This is needed for Unifi Network Application
-      #- "--serversTransport.insecureSkipVerify=true"
+      - "--serversTransport.insecureSkipVerify=true"
       # DNS
       - "--entrypoints.dns.address=:53/tcp"
       - "--entrypoints.dns-udp.address=:53/udp"

@@ -1,6 +1,14 @@
 - name: Install Unifi Network Application
   hosts: pi5
   become: true
+  vars:
+    app_name: "unifi-network-application"
+    subdomain: "unifi"
+    app_dir: "/data/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_group }}"
+    docker_port_http: "8443"
+   
   tasks:
     - name: Create Unifi Network Application directories
       ansible.builtin.file:
@@ -14,8 +22,8 @@
         - /data/unifi-network-application/mongo-db
 
     - name: Unifi Network Application install compose file
-      ansible.builtin.copy:
-        src: compose.yml
+      ansible.builtin.template:
+        src: templates/compose.yml.j2
         dest: /data/unifi-network-application/compose.yml
         mode: "0600"
 
@@ -25,20 +33,20 @@
         dest: /data/unifi-network-application/mongo-db/init-mongo.js
         mode: "0600"
 
-    - name: Unifi Network Application install service
-      ansible.builtin.copy:
-        src: etc/systemd/system/unifi-network-application.service
-        dest: /etc/systemd/system/unifi-network-application.service
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.template:
+        src: "../miscelaneous/etc/systemd/system/compose.service.template.j2"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
         mode: "0644"
         owner: root
         group: root
 
-    - name: Enable service unifi-network-application
+    - name: "Enable service {{ app_name }}"
       ansible.builtin.service:
-        name: unifi-network-application
-        state: started
+        name: "{{ app_name }}"
+        enabled: true
 
-    - name: Start service unifi-network-application
+    - name: "Start service {{ app_name }}"
       ansible.builtin.service:
-        name: unifi-network-application
+        name: "{{ app_name }}"
         state: restarted
