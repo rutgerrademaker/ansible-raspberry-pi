@@ -1,10 +1,26 @@
 http:
   routers:
-    '{{ app_name }}':
-      rule: "Host(`{{ subdomain }}.{{ local_domain }}`) || Host(`{{ subdomain }}.{{ public_domain }}`)"
+    {{ app_name }}:
+      rule: "Host(`{{ subdomain }}.{{ public_domain }}_"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: {{ app_name }}
+  
+    {{ app_name }}:
+      rule: "Host(`{{ subdomain }}.{{ public_domain }})"
       entryPoints:
         - web
-      service: '{{ app_name }}'
+      middlewares:
+        - redirect-to-https
+      service: {{ app_name }}
+    
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
 
   services:
     '{{ app_name }}':

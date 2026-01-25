@@ -25,9 +25,16 @@ services:
       - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
       - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
 
-      # DNS
-      - "traefik.udp.routers.{{ app_name }}-dns.entrypoints={{ app_name }}-dns"
-      - "traefik.udp.routers.{{ app_name }}-dns.service={{ app_name }}"
+      # UDP
+#      - "traefik.udp.routers.{{ app_name }}-dns.entrypoints={{ app_name }}-dns"
+#      - "traefik.tcp.routers.{{ app_name }}-dns.entrypoints=dns"
+#      - "traefik.tcp.routers.{{ app_name }}-dns.entrypoints.ssh.address=222"
+#      - "traefik.udp.routers.{{ app_name }}-dns.service={{ app_name }}"
+
+      - "traefik.udp.routers.dns-udp.entrypoints=dns-udp"
+      - "traefik.udp.routers.dns-udp.service={{ app_name }}"
+
+      # TODO: TCP?
 
       # Services
       - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
