@@ -32,7 +32,7 @@ services:
 
       # Services
       - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
-      - "traefik.tcp.services.{{ app_name }}-ssh-svc.loadbalancer.server.port=22"
+      - "traefik.tcp.services.{{ app_name }}-ssh-svc.loadbalancer.server.port=222"
 
     networks:
       - "local"

@@ -21,22 +21,31 @@ services:
       - /data/photos:/data/photos:ro
     env_file:
       - .env
-    ports:
-      - 2283:3001
+#    ports:
+#      - 2283:3001
     depends_on:
       - redis
       - database
     restart: always
     labels:
-      - "traefik.backend=___APP_NAME___"
-      - "traefik.docker.network=webproxy"
-      - "traefik.http.routers.___APP_NAME___.rule=Host(`___APP_NAME___.home`)"
-      - "traefik.frontend.rule=Host:___APP_NAME___.home"
-      - "traefik.http.routers.___APP_NAME___.entrypoints=web"
       - "traefik.enable=true"
-      - "traefik.port=3001"
-      - "traefik.default.protocol=http"
-      - "traefik.http.services.___APP_NAME___.loadbalancer.server.port=3001"
+      - "traefik.docker.network=webproxy"
+
+      - "traefik.http.routers.{{ app_name }}-home.rule=Host(`{{ subdomain }}.home`)"
+      - "traefik.http.routers.{{ app_name }}-home.entrypoints=web"
+
+      # HTTPS router
+      - "traefik.http.routers.{{ app_name }}.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ app_name }}.tls=true"
+      - "traefik.http.routers.{{ app_name }}.tls.certresolver=letsencrypt"
+
+      # HTTP redirect
+      - "traefik.http.routers.{{ app_name }}-http.rule=Host(`{{ subdomain }}.{{ public_domain }}`)"
+      - "traefik.http.routers.{{ app_name }}-http.entrypoints=web"
+      - "traefik.http.routers.{{ app_name }}-http.middlewares=redirect-to-https"
+
+      - "traefik.http.services.{{ app_name }}.loadbalancer.server.port={{ docker_port_http }}"
     networks:
        - public
        - local
