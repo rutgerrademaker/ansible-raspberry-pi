@@ -7,7 +7,7 @@
     app_user: "{{ ansible_user }}"
     app_group: "{{ ansible_group }}"
     docker_port_http: "8123"
-    host: "hass.home"
+    subdomain: "hass"
 
   tasks:
     - name: Create Home Assistant directories

@@ -10,7 +10,7 @@
     docker_port_tcp: "8097"
     subdomain: "mas"
   tasks:
-    - name: Create Home Assistant directories
+    - name: Create directories for {{ app_name }}
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -18,38 +18,39 @@
         group: "{{ app_group }}"
         mode: "0755"
       loop:
-        - /data/music-assistant-server
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/dynamic"
 
     - name: Install Music Assistant Server compose file
       ansible.builtin.template:
-        src: compose.yml.j2
-        dest: /data/music-assistant-server/compose.yml
+        src: templates/compose.yml.j2
+        dest: "{{ app_dir }}/compose.yml"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
 
     - name: Install Music Assistant Traefik file
       ansible.builtin.template:
-        src: opt/traefik/dynamic/music-assistant-server.yml.j2
-        dest: /data/traefik/dynamic/music-assistant-server.yml
+        src: templates/opt/traefik/dynamic/music-assistant-server.yml.j2
+        dest: "{{ app_dir }}/dynamic/music-assistant-server.yml"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: "0600"
 
-    - name: Install Music Assistant Server service
-      ansible.builtin.copy:
-        src: etc/systemd/system/music-assistant-server.service
-        dest: /etc/systemd/system/music-assistant-server.service
+    - name: "Install service for {{ app_name }}"
+      ansible.builtin.template:
+        src: "../miscelaneous/etc/systemd/system/compose.service.template.j2"
+        dest: "/etc/systemd/system/{{ app_name }}.service"
         mode: "0644"
         owner: root
         group: root
 
-    - name: Enable service music-assistant-server
+    - name: "Enable service {{ app_name }}"
       ansible.builtin.service:
-        name: music-assistant-server
+        name: "{{ app_name }}"
         enabled: true
 
-    - name: Start service music-assistant-server
+    - name: "Start service {{ app_name }}"
       ansible.builtin.service:
-        name: music-assistant-server
+        name: "{{ app_name }}"
         state: restarted

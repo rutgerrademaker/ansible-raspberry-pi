@@ -52,10 +52,3 @@
       ansible.builtin.service:
         name: "{{ app_name }}"
         state: restarted
-
-    - name: "Add local dns record"
-      delegate_to: localhost
-      ansible.builtin.lineinfile:
-        dest: ../miscelaneous/local_dns_records.list
-        line: '{{ ansible_host }} {{ app_name }}.{{ local_domain}}'
-        state: present
